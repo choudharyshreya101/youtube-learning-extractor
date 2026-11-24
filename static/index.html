@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Learning Extractor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path>
+            <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="currentColor"></polygon>
+          </svg>
+        </div>
+        <div>
+          <h1 class="app-title">YouTube Learning Extractor</h1>
+          <p class="app-subtitle">Turn your watch history and playlists into structured, AI-curated syllabi</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <button id="btn-demo-mode" class="btn btn-demo">
+          <span class="sparkle">✨</span> Try Sample Demo Mode
+        </button>
+      </div>
+    </header>
+
+    <!-- Privacy Banner -->
+    <div class="privacy-banner">
+      <div class="privacy-icon">🛡️</div>
+      <div class="privacy-content">
+        <div class="privacy-title">Privacy Guardrail Guaranteed</div>
+        <p class="privacy-text">
+          Watch history files are parsed <strong>100% locally in your browser</strong>. Your raw history, watch timestamps, and user IDs are never stored or logged. Only filtered video titles for your chosen topic are passed to Gemini in inert data containers.
+        </p>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="main-layout">
+      <!-- Input Panel -->
+      <section class="panel input-panel">
+        <div class="panel-header">
+          <h2>1. Video Sources</h2>
+          <span class="badge" id="video-pool-badge">0 videos loaded</span>
+        </div>
+
+        <!-- Takeout Multi-File Dropzone -->
+        <div class="form-group">
+          <label class="form-label">Google Takeout History (Multi-file supported)</label>
+          <div class="dropzone" id="takeout-dropzone">
+            <input type="file" id="file-input" multiple accept=".json" class="file-input-hidden">
+            <div class="dropzone-icon">📁</div>
+            <div class="dropzone-title">Drop your <code>watch-history.json</code> file(s) here</div>
+            <div class="dropzone-hint">Multiple accounts supported (e.g. Personal + Study). Click or drag to upload.</div>
+          </div>
+          <div id="file-list" class="file-list"></div>
+        </div>
+
+        <!-- Playlist Input -->
+        <div class="form-group">
+          <label class="form-label" for="playlist-url">Or Import YouTube Playlist URL</label>
+          <div class="input-with-button">
+            <input type="url" id="playlist-url" placeholder="https://www.youtube.com/playlist?list=..." class="form-control">
+            <button id="btn-load-playlist" class="btn btn-secondary">Fetch Playlist</button>
+          </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="filters-card">
+          <div class="filters-header">
+            <h3>Filtering & Cutoffs</h3>
+          </div>
+          <div class="filter-row">
+            <div class="filter-col">
+              <label class="form-label" for="date-cutoff">Date Cutoff</label>
+              <select id="date-cutoff" class="form-control">
+                <option value="all">All Time</option>
+                <option value="30">Last 30 Days</option>
+                <option value="90">Last 90 Days</option>
+                <option value="180">Last 6 Months</option>
+                <option value="365" selected>Last 1 Year</option>
+              </select>
+            </div>
+            <div class="filter-col">
+              <label class="form-label">Format Filters</label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="exclude-shorts" checked>
+                <span>Exclude YouTube Shorts (&lt;60s)</span>
+              </label>
+            </div>
+          </div>
+          <div class="filter-summary">
+            Active pool: <strong id="filtered-count">0</strong> matching videos ready for extraction
+          </div>
+        </div>
+
+        <!-- Topic & Extraction -->
+        <div class="form-group extract-section">
+          <label class="form-label" for="topic-input">Target Learning Topic</label>
+          <input type="text" id="topic-input" class="form-control" placeholder="e.g. English Communication, Python FastAPI, System Design">
+          <button id="btn-extract" class="btn btn-primary btn-block">
+            <span>⚡ Extract Learning Syllabus</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Output Panel -->
+      <section class="panel output-panel">
+        <div class="panel-header">
+          <h2>2. Curated Syllabus</h2>
+          <div class="output-actions" id="output-actions" style="display: none;">
+            <button id="btn-copy-notebooklm" class="btn btn-notebooklm" title="Copy up to 50 links for Google NotebookLM">
+              📋 Copy for NotebookLM (<span id="notebooklm-count">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="empty-state">
+          <div class="empty-icon">🎓</div>
+          <h3>No Syllabus Generated Yet</h3>
+          <p>Upload your Takeout JSON file(s) or click <strong>Try Sample Demo Mode</strong> above to test with pre-computed data instantly.</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="loading-state" style="display: none;">
+          <div class="spinner"></div>
+          <h4 id="loading-title">Extracting & Clustering with Gemini...</h4>
+          <p id="loading-subtitle">Grouping videos into intuitive sub-topics and writing factual briefs.</p>
+        </div>
+
+        <!-- Syllabus Content -->
+        <div id="syllabus-container" class="syllabus-container" style="display: none;">
+          <!-- Topic Banner -->
+          <div class="syllabus-hero">
+            <div class="hero-top">
+              <div class="hero-topic">
+                <span class="topic-label">Extracted Syllabus</span>
+                <h3 id="syllabus-topic-title">Topic Name</h3>
+              </div>
+              <div class="hero-badges">
+                <span id="badge-time-sensitivity" class="pill-badge pill-timeless">📚 Timeless Topic</span>
+                <span id="badge-total-videos" class="pill-badge pill-neutral">0 Videos</span>
+              </div>
+            </div>
+
+            <!-- Refine Bar -->
+            <div class="refine-bar">
+              <input type="text" id="refine-input" class="form-control" placeholder="Refine syllabus (e.g. 'Emphasize speaking drills' or 'Exclude beginner basics')...">
+              <button id="btn-refine" class="btn btn-secondary">Refine with AI</button>
+            </div>
+          </div>
+
+          <!-- Subtopics List -->
+          <div id="subtopics-list" class="subtopics-list"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

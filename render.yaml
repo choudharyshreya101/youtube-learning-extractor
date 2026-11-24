@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: youtube-learning-extractor
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: YOUTUBE_API_KEY
+        sync: false
+      - key: PORT
+        value: "10000"
