@@ -14,6 +14,14 @@ class VideoInput(BaseModel):
 
     videoId: str = Field(..., pattern=r"^[a-zA-Z0-9_-]{11}$")
     title: str = Field(..., max_length=500)
+    channel: Optional[str] = Field(None, max_length=200)
+
+
+class FeedbackRequest(BaseModel):
+    """Anonymous user feedback or feature request."""
+
+    message: str = Field(..., min_length=1, max_length=2000)
+    timestamp: Optional[str] = None
 
 
 class SyllabusRequest(BaseModel):

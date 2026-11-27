@@ -2,25 +2,43 @@
 (function () {
   'use strict';
 
+  // --------------------------------------------------------------------------
   // State
+  // --------------------------------------------------------------------------
   let loadedVideos = [];
   let uploadedFiles = [];
   let currentSyllabus = null;
   let videoDetailsMap = new Map();
+  let selectedVideoIds = new Set();
 
+  // --------------------------------------------------------------------------
   // DOM Elements
+  // --------------------------------------------------------------------------
+  const htmlEl = document.documentElement;
+  const btnThemeToggle = document.getElementById('btn-theme-toggle');
+  const iconThemeSun = document.getElementById('icon-theme-sun');
+  const iconThemeMoon = document.getElementById('icon-theme-moon');
+
+  const topicInput = document.getElementById('topic-input');
+  const dateCutoffSelect = document.getElementById('date-cutoff');
+  const includeShortsCheckbox = document.getElementById('include-shorts');
+  const videoPoolBadge = document.getElementById('video-pool-badge');
+  const filteredCountEl = document.getElementById('filtered-count');
+
   const dropzone = document.getElementById('takeout-dropzone');
   const fileInput = document.getElementById('file-input');
   const fileList = document.getElementById('file-list');
-  const videoPoolBadge = document.getElementById('video-pool-badge');
+  const howToToggle = document.getElementById('how-to-toggle');
+  const howToContent = document.getElementById('how-to-content');
+  const howToChevron = document.getElementById('how-to-chevron');
+
   const playlistInput = document.getElementById('playlist-url');
   const btnLoadPlaylist = document.getElementById('btn-load-playlist');
-  const dateCutoffSelect = document.getElementById('date-cutoff');
-  const excludeShortsCheckbox = document.getElementById('exclude-shorts');
-  const filteredCountEl = document.getElementById('filtered-count');
-  const topicInput = document.getElementById('topic-input');
+
   const btnExtract = document.getElementById('btn-extract');
   const btnDemoMode = document.getElementById('btn-demo-mode');
+  const btnDemoModeInline = document.getElementById('btn-demo-mode-inline');
+
   const emptyState = document.getElementById('empty-state');
   const loadingState = document.getElementById('loading-state');
   const loadingTitle = document.getElementById('loading-title');
@@ -37,25 +55,56 @@
   const outputActions = document.getElementById('output-actions');
   const toastContainer = document.getElementById('toast-container');
 
-  // Regex Patterns
+  // FAQ Drawer Elements
+  const btnFaqTrigger = document.getElementById('btn-faq-trigger');
+  const faqDrawer = document.getElementById('faq-drawer');
+  const btnFaqClose = document.getElementById('btn-faq-close');
+  const faqChatBody = document.getElementById('faq-chat-body');
+
   const YOUTUBE_ID_RE = /(?:youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\/shorts\/)([a-zA-Z0-9_-]{11})/;
+
+  // --------------------------------------------------------------------------
+  // Theme Management: Light Mode Default + Sun/Moon Toggle
+  // --------------------------------------------------------------------------
+  function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    applyTheme(savedTheme);
+  }
+
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      htmlEl.classList.add('dark');
+      iconThemeSun.style.display = 'block';
+      iconThemeMoon.style.display = 'none';
+      btnThemeToggle.setAttribute('title', 'Switch to Light Theme');
+    } else {
+      htmlEl.classList.remove('dark');
+      iconThemeSun.style.display = 'none';
+      iconThemeMoon.style.display = 'block';
+      btnThemeToggle.setAttribute('title', 'Switch to Dark Theme');
+    }
+    localStorage.setItem('theme', theme);
+  }
+
+  btnThemeToggle.addEventListener('click', () => {
+    const isDark = htmlEl.classList.contains('dark');
+    applyTheme(isDark ? 'light' : 'dark');
+  });
 
   // --------------------------------------------------------------------------
   // Helpers
   // --------------------------------------------------------------------------
-
   function showToast(message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;
-    const icon = type === 'success' ? '✅' : type === 'error' ? '⚠️' : 'ℹ️';
-    toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+    toast.textContent = message;
     toastContainer.appendChild(toast);
     setTimeout(() => {
       toast.style.opacity = '0';
-      toast.style.transform = 'translateY(10px)';
+      toast.style.transform = 'translateY(8px)';
       toast.style.transition = 'all 0.25s ease';
       setTimeout(() => toast.remove(), 250);
-    }, 4000);
+    }, 4500);
   }
 
   function formatNumber(num) {
@@ -72,22 +121,9 @@
     const hours = parseInt(match[1] || '0', 10);
     const minutes = parseInt(match[2] || '0', 10);
     const seconds = parseInt(match[3] || '0', 10);
-
     const pad = (n) => String(n).padStart(2, '0');
-    if (hours > 0) {
-      return `${hours}:${pad(minutes)}:${pad(seconds)}`;
-    }
+    if (hours > 0) return `${hours}:${pad(minutes)}:${pad(seconds)}`;
     return `${minutes}:${pad(seconds)}`;
-  }
-
-  function parseDurationSeconds(iso) {
-    if (!iso) return 0;
-    const match = iso.match(/^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/i);
-    if (!match) return 0;
-    const hours = parseInt(match[1] || '0', 10);
-    const minutes = parseInt(match[2] || '0', 10);
-    const seconds = parseInt(match[3] || '0', 10);
-    return hours * 3600 + minutes * 60 + seconds;
   }
 
   function timeToSeconds(timeStr) {
@@ -98,36 +134,51 @@
     return 0;
   }
 
-  function isRecentDate(dateStr) {
-    if (!dateStr) return false;
+  function formatRelativeTime(dateStr) {
+    if (!dateStr) return '';
     try {
       const pubDate = new Date(dateStr);
-      const diffDays = (new Date() - pubDate) / (1000 * 60 * 60 * 24);
-      return diffDays <= 365;
+      if (isNaN(pubDate.getTime())) return '';
+      const diffMs = new Date() - pubDate;
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      if (diffDays < 1) return 'today';
+      if (diffDays === 1) return 'yesterday';
+      if (diffDays < 30) return `${diffDays}d ago`;
+      const diffMonths = Math.floor(diffDays / 30);
+      if (diffMonths < 12) return `${diffMonths}m ago`;
+      const diffYears = Math.floor(diffDays / 365);
+      return `${diffYears}y ago`;
     } catch {
-      return false;
+      return '';
     }
   }
 
   // --------------------------------------------------------------------------
+  // Collapsible Micro-Guide: How to get this file
+  // --------------------------------------------------------------------------
+  howToToggle.addEventListener('click', () => {
+    const isHidden = howToContent.style.display === 'none';
+    howToContent.style.display = isHidden ? 'block' : 'none';
+    howToChevron.style.transform = isHidden ? 'rotate(180deg)' : 'none';
+  });
+
+  // --------------------------------------------------------------------------
   // Video Pool & Filtering
   // --------------------------------------------------------------------------
-
   function getFilteredVideos() {
-    const cutoffDays = dateCutoffSelect.value;
-    const excludeShorts = excludeShortsCheckbox.checked;
+    const cutoffVal = dateCutoffSelect.value;
+    const includeShorts = includeShortsCheckbox.checked;
     const now = new Date();
 
     return loadedVideos.filter((v) => {
-      // Shorts check
-      if (excludeShorts && v.isShort) return false;
+      // Shorts check: if includeShorts is false, exclude shorts
+      if (!includeShorts && v.isShort) return false;
 
-      // Date cutoff check
-      if (cutoffDays !== 'all' && v.watchDate) {
+      // Date cutoff check (applies to watch history date)
+      if (cutoffVal !== 'all' && v.watchDate) {
         const daysAgo = (now - v.watchDate) / (1000 * 60 * 60 * 24);
-        if (daysAgo > parseInt(cutoffDays, 10)) return false;
+        if (daysAgo > parseInt(cutoffVal, 10)) return false;
       }
-
       return true;
     });
   }
@@ -141,9 +192,8 @@
   }
 
   // --------------------------------------------------------------------------
-  // File Dropzone & Parsing (Client-Side Privacy Guardrail)
+  // File Dropzone: JSON & CSV Parsing (100% In-Browser)
   // --------------------------------------------------------------------------
-
   dropzone.addEventListener('dragover', (e) => {
     e.preventDefault();
     dropzone.classList.add('dragover');
@@ -168,62 +218,95 @@
   });
 
   async function handleFiles(files) {
-    const jsonFiles = files.filter((f) => f.name.endsWith('.json'));
-    if (!jsonFiles.length) {
-      showToast('Please select .json files from Google Takeout.', 'error');
+    const validFiles = files.filter((f) => f.name.endsWith('.json') || f.name.endsWith('.csv'));
+    if (!validFiles.length) {
+      showToast('Please upload .json or .csv files exported from Google Takeout.', 'error');
       return;
     }
 
-    for (const file of jsonFiles) {
+    for (const file of validFiles) {
       try {
         const text = await file.text();
-        const json = JSON.parse(text);
-        if (!Array.isArray(json)) {
-          showToast(`File ${file.name} is not a valid Takeout array format.`, 'error');
-          continue;
-        }
-
-        const sourceLabel = file.name.replace(/\.json$/i, '');
+        const sourceLabel = file.name.replace(/\.(json|csv)$/i, '');
         let count = 0;
 
-        for (const item of json) {
-          let title = item.title || '';
-          if (title.startsWith('Watched ')) {
-            title = title.substring(8).trim();
-          }
-
-          // Skip deleted/private or empty
-          if (!title || title.includes('Deleted video') || title.includes('Private video')) {
+        if (file.name.endsWith('.json')) {
+          const json = JSON.parse(text);
+          if (!Array.isArray(json)) {
+            showToast(`File ${file.name} is not a valid Takeout JSON array.`, 'error');
             continue;
           }
 
-          const url = item.titleUrl || '';
-          const match = url.match(YOUTUBE_ID_RE);
-          if (!match) continue;
+          for (const item of json) {
+            let title = item.title || '';
+            if (title.startsWith('Watched ')) {
+              title = title.substring(8).trim();
+            }
+            if (!title || title.includes('Deleted video') || title.includes('Private video')) {
+              continue;
+            }
 
-          const videoId = match[1];
-          const isShort = url.includes('/shorts/') || title.toLowerCase().includes('#shorts');
+            const url = item.titleUrl || '';
+            const match = url.match(YOUTUBE_ID_RE);
+            if (!match) continue;
 
-          let watchDate = null;
-          if (item.time) {
-            const d = new Date(item.time);
-            if (!isNaN(d.getTime())) watchDate = d;
+            const videoId = match[1];
+            const isShort = url.includes('/shorts/') || title.toLowerCase().includes('#shorts');
+
+            let watchDate = null;
+            if (item.time) {
+              const d = new Date(item.time);
+              if (!isNaN(d.getTime())) watchDate = d;
+            }
+
+            const channelName = item.subtitles?.[0]?.name || '';
+
+            const existingIdx = loadedVideos.findIndex((v) => v.videoId === videoId);
+            if (existingIdx === -1) {
+              loadedVideos.push({
+                videoId,
+                title,
+                watchDate,
+                channelName,
+                source: sourceLabel,
+                isShort,
+              });
+              count++;
+            }
           }
+        } else if (file.name.endsWith('.csv')) {
+          // Parse playlist CSV (e.g. Watch later.csv)
+          const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
+          if (lines.length > 1) {
+            const header = lines[0].split(',').map((h) => h.trim().replace(/^"|"$/g, '').toLowerCase());
+            const idCol = header.findIndex((h) => h.includes('video id') || h === 'id');
+            const titleCol = header.findIndex((h) => h.includes('title'));
+            const channelCol = header.findIndex((h) => h.includes('channel'));
 
-          const channelName = item.subtitles?.[0]?.name || '';
+            for (let i = 1; i < lines.length; i++) {
+              const row = lines[i].split(',').map((c) => c.trim().replace(/^"|"$/g, ''));
+              let videoId = idCol !== -1 ? row[idCol] : '';
+              if (!videoId || videoId.length !== 11) {
+                const match = lines[i].match(YOUTUBE_ID_RE);
+                if (match) videoId = match[1];
+              }
+              if (!videoId || videoId.length !== 11) continue;
 
-          // Add or update
-          const existingIdx = loadedVideos.findIndex((v) => v.videoId === videoId);
-          if (existingIdx === -1) {
-            loadedVideos.push({
-              videoId,
-              title,
-              watchDate,
-              channelName,
-              source: sourceLabel,
-              isShort,
-            });
-            count++;
+              const title = titleCol !== -1 ? row[titleCol] : `Video (${videoId})`;
+              const channelName = channelCol !== -1 ? row[channelCol] : '';
+
+              if (!loadedVideos.some((v) => v.videoId === videoId)) {
+                loadedVideos.push({
+                  videoId,
+                  title: title || `Video (${videoId})`,
+                  watchDate: new Date(),
+                  channelName,
+                  source: sourceLabel,
+                  isShort: false,
+                });
+                count++;
+              }
+            }
           }
         }
 
@@ -245,8 +328,8 @@
       const item = document.createElement('div');
       item.className = 'file-item';
       item.innerHTML = `
-        <span class="file-item-name">📄 ${f.name}</span>
-        <span class="file-item-badge">${f.count} items</span>
+        <span class="file-item-name">${f.name}</span>
+        <span class="file-item-badge">${f.count} videos</span>
       `;
       fileList.appendChild(item);
     });
@@ -255,7 +338,6 @@
   // --------------------------------------------------------------------------
   // Playlist Input
   // --------------------------------------------------------------------------
-
   btnLoadPlaylist.addEventListener('click', async () => {
     const url = playlistInput.value.trim();
     if (!url) {
@@ -264,7 +346,7 @@
     }
 
     btnLoadPlaylist.disabled = true;
-    btnLoadPlaylist.textContent = 'Loading...';
+    btnLoadPlaylist.textContent = 'Fetching...';
 
     try {
       const resp = await fetch('/api/youtube/playlist', {
@@ -304,38 +386,38 @@
       showToast(err.message, 'error');
     } finally {
       btnLoadPlaylist.disabled = false;
-      btnLoadPlaylist.textContent = 'Fetch Playlist';
+      btnLoadPlaylist.textContent = 'Fetch';
     }
   });
 
   dateCutoffSelect.addEventListener('change', updateVideoCounts);
-  excludeShortsCheckbox.addEventListener('change', updateVideoCounts);
+  includeShortsCheckbox.addEventListener('change', updateVideoCounts);
 
   // --------------------------------------------------------------------------
   // Extract Syllabus
   // --------------------------------------------------------------------------
-
   btnExtract.addEventListener('click', async () => {
     const topic = topicInput.value.trim();
     if (!topic) {
-      showToast('Please enter a target learning topic.', 'error');
+      showToast('Please enter a target topic, keywords, or channel.', 'error');
       topicInput.focus();
       return;
     }
 
     const filtered = getFilteredVideos();
     if (!filtered.length) {
-      showToast('No videos matching your current filter settings.', 'error');
+      showToast('No videos match your current filter settings.', 'error');
       return;
     }
 
-    // Limit to 500 for model prompt capacity
+    // Send up to 500 items including channel name for channel-aware extraction
     const inputVideos = filtered.slice(0, 500).map((v) => ({
       videoId: v.videoId,
       title: v.title,
+      channel: v.channelName || '',
     }));
 
-    showLoading('Extracting & Clustering with Gemini 3.5...', 'Grouping videos into intuitive sub-topics with 1-line briefs');
+    showLoading('Extracting & Clustering with Gemini...', 'Grouping videos into intuitive sub-topics with 1-line briefs');
 
     try {
       const extractResp = await fetch('/api/ai/extract-syllabus', {
@@ -351,7 +433,6 @@
 
       const syllabus = await extractResp.json();
 
-      // Collect all video IDs across subtopics to enrich
       const allIds = [];
       syllabus.subTopics.forEach((st) => {
         st.videoIds.forEach((id) => {
@@ -360,7 +441,7 @@
       });
 
       if (allIds.length > 0) {
-        showLoading('Enriching Video Metadata...', `Fetching statistics, chapters, and like ratios for ${allIds.length} videos`);
+        showLoading('Enriching Video Details...', `Fetching metadata & chapters for ${allIds.length} videos`);
         const enrichResp = await fetch('/api/youtube/enrich', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -370,7 +451,6 @@
         if (enrichResp.ok) {
           const enrichData = await enrichResp.json();
           enrichData.videos.forEach((v) => {
-            // Inherit source from loadedVideos if available
             const original = loadedVideos.find((lv) => lv.videoId === v.videoId);
             if (original && original.source) v.source = original.source;
             videoDetailsMap.set(v.videoId, v);
@@ -380,7 +460,7 @@
 
       currentSyllabus = syllabus;
       renderSyllabus(syllabus);
-      showToast('Learning syllabus extracted successfully!', 'success');
+      showToast('Curated syllabus extracted successfully!', 'success');
     } catch (err) {
       console.error(err);
       showToast(err.message, 'error');
@@ -391,7 +471,6 @@
   // --------------------------------------------------------------------------
   // Refine Syllabus
   // --------------------------------------------------------------------------
-
   btnRefine.addEventListener('click', async () => {
     const refinement = refineInput.value.trim();
     if (!refinement) {
@@ -408,6 +487,7 @@
     const inputVideos = filtered.slice(0, 500).map((v) => ({
       videoId: v.videoId,
       title: v.title,
+      channel: v.channelName || '',
     }));
 
     try {
@@ -440,42 +520,60 @@
   });
 
   // --------------------------------------------------------------------------
-  // Sample Demo Mode
+  // Sample Demo Mode (Sync Counters Automatically)
   // --------------------------------------------------------------------------
-
-  btnDemoMode.addEventListener('click', async () => {
-    showLoading('Loading Sample Demo Dataset...', 'No API key needed — testing complete flow with pre-bundled data');
+  async function loadDemoMode() {
+    showLoading('Loading Sample Demo Data...', 'Testing complete syllabus with bundled dataset');
 
     try {
       const resp = await fetch('/api/demo/sample-data');
-      if (!resp.ok) {
-        throw new Error('Failed to load demo data.');
-      }
+      if (!resp.ok) throw new Error('Failed to load demo data.');
 
       const data = await resp.json();
 
-      // Pre-fill videoDetailsMap from demo data
+      // Pre-fill videoDetailsMap & sync loadedVideos so counters are accurate
       videoDetailsMap.clear();
+      loadedVideos = [];
+      uploadedFiles = [{ name: 'Sample Demo Dataset', count: data.totalVideos || 18, label: 'Demo' }];
+
       data.subTopics.forEach((st) => {
         if (st.videos && Array.isArray(st.videos)) {
-          st.videos.forEach((v) => videoDetailsMap.set(v.videoId, v));
+          st.videos.forEach((v) => {
+            videoDetailsMap.set(v.videoId, v);
+            loadedVideos.push({
+              videoId: v.videoId,
+              title: v.title,
+              watchDate: new Date(v.publishedAt || Date.now()),
+              channelName: v.channelName,
+              source: v.source || 'Account 2 (Study)',
+              isShort: false,
+            });
+          });
         }
       });
 
+      // Update inputs & counters so they are never 0 in Demo Mode
       topicInput.value = data.topic || 'English & Communication';
+      renderFileList();
+      updateVideoCounts();
+
       currentSyllabus = data;
       renderSyllabus(data);
-      showToast('Loaded Sample Demo Mode (English & Communication)!', 'success');
+      showToast('Loaded Sample Demo Mode (English & Communication)', 'success');
     } catch (err) {
       showToast(err.message, 'error');
       showEmpty();
     }
-  });
+  }
+
+  btnDemoMode.addEventListener('click', loadDemoMode);
+  if (btnDemoModeInline) {
+    btnDemoModeInline.addEventListener('click', loadDemoMode);
+  }
 
   // --------------------------------------------------------------------------
-  // Render Syllabus
+  // Render Syllabus (Accordions, Selection Checkboxes, Monospace Chapters)
   // --------------------------------------------------------------------------
-
   function renderSyllabus(syllabus) {
     emptyState.style.display = 'none';
     loadingState.style.display = 'none';
@@ -484,16 +582,13 @@
 
     syllabusTopicTitle.textContent = syllabus.topic;
 
-    // Time sensitivity badge
     if (syllabus.isTimeSensitive) {
-      badgeTimeSensitivity.className = 'pill-badge pill-timesensitive';
-      badgeTimeSensitivity.textContent = '⚡ Fast-Changing Topic';
+      badgeTimeSensitivity.textContent = 'Fast-changing topic';
     } else {
-      badgeTimeSensitivity.className = 'pill-badge pill-timeless';
-      badgeTimeSensitivity.textContent = '📚 Timeless Topic';
+      badgeTimeSensitivity.textContent = 'Timeless topic';
     }
 
-    // Collect all video IDs
+    // Collect all video IDs and select all by default
     const allIds = [];
     syllabus.subTopics.forEach((st) => {
       st.videoIds.forEach((id) => {
@@ -501,155 +596,356 @@
       });
     });
 
-    badgeTotalVideos.textContent = `${allIds.length} Videos in Syllabus`;
-    notebooklmCountEl.textContent = Math.min(allIds.length, 50);
+    selectedVideoIds = new Set(allIds);
+    badgeTotalVideos.textContent = `${allIds.length} videos`;
+    updateNotebookLMCount();
 
-    // Render Subtopics
+    // Render Subtopic Accordions
     subtopicsList.innerHTML = '';
-    syllabus.subTopics.forEach((st) => {
-      const card = document.createElement('div');
-      card.className = 'subtopic-card';
+    syllabus.subTopics.forEach((st, idx) => {
+      const accordion = document.createElement('div');
+      // Expand first topic by default, collapse the rest
+      const isFirst = idx === 0;
+      accordion.className = `subtopic-accordion ${isFirst ? 'open' : ''}`;
 
-      const videosHtml = st.videoIds
-        .map((vidId) => {
-          const detail = videoDetailsMap.get(vidId) || {
-            videoId: vidId,
-            title: `Video (${vidId})`,
-            thumbnailUrl: `https://i.ytimg.com/vi/${vidId}/mqdefault.jpg`,
-            channelName: '',
-            duration: '',
-            chapters: [],
-            likeRatio: null,
-            hasHighEngagement: false,
-            isRecent: false,
-            source: '',
-          };
+      const totalVideosCount = st.videoIds.length;
+      // In first topic, show only first 2 cards initially if > 2
+      const limitInitial = isFirst && totalVideosCount > 2;
 
-          const durationText = formatDuration(detail.duration);
-          const viewsText = formatNumber(detail.viewCount);
-          const likesText = formatNumber(detail.likeCount);
-          const subsText = formatNumber(detail.subscriberCount);
-          const isRecent = detail.isRecent || isRecentDate(detail.publishedAt);
-
-          let statsHtml = '';
-          if (viewsText) statsHtml += `<span class="stat-pill">👁️ ${viewsText} views</span>`;
-          if (likesText) statsHtml += `<span class="stat-pill">👍 ${likesText}</span>`;
-          if (detail.likeRatio != null) {
-            statsHtml += `<span class="stat-pill badge-ratio">📊 ${detail.likeRatio}% like ratio</span>`;
-          }
-          if (detail.hasHighEngagement) {
-            statsHtml += `<span class="stat-pill badge-high-engagement">🔥 High Engagement</span>`;
-          }
-          if (isRecent) {
-            statsHtml += `<span class="stat-pill badge-recent">✨ Recent</span>`;
-          }
-          if (detail.source) {
-            statsHtml += `<span class="stat-pill badge-source">🏷️ ${detail.source}</span>`;
-          }
-
-          let chaptersHtml = '';
-          if (detail.chapters && detail.chapters.length > 0) {
-            const chapterPills = detail.chapters
-              .map(
-                (c) =>
-                  `<a href="https://www.youtube.com/watch?v=${vidId}&t=${timeToSeconds(c.time)}s" target="_blank" rel="noopener" class="chapter-pill"><code>${c.time}</code> ${c.label}</a>`
-              )
-              .join('');
-
-            chaptersHtml = `
-              <div class="chapters-toggle">
-                <button type="button" class="chapters-btn" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'flex' : 'none'">
-                  📑 Chapters (${detail.chapters.length}) ▾
-                </button>
-                <div class="chapters-list" style="display: none;">
-                  ${chapterPills}
-                </div>
-              </div>
-            `;
-          }
-
-          return `
-            <div class="video-card">
-              <div class="video-thumb-wrap">
-                <img src="${detail.thumbnailUrl || `https://i.ytimg.com/vi/${vidId}/mqdefault.jpg`}" alt="" class="video-thumb" loading="lazy" onerror="this.src='https://i.ytimg.com/vi/${vidId}/hqdefault.jpg'">
-                ${durationText ? `<span class="video-duration">${durationText}</span>` : ''}
-              </div>
-              <div class="video-content">
-                <div>
-                  <a href="https://www.youtube.com/watch?v=${vidId}" target="_blank" rel="noopener" class="video-title">
-                    ${detail.title}
-                  </a>
-                  <div class="video-channel">
-                    <span>${detail.channelName || 'YouTube'}</span>
-                    ${subsText ? `<span>• ${subsText} subscribers</span>` : ''}
-                  </div>
-                  <div class="video-stats">${statsHtml}</div>
-                </div>
-                ${chaptersHtml}
-              </div>
-            </div>
-          `;
-        })
-        .join('');
-
-      card.innerHTML = `
+      accordion.innerHTML = `
         <div class="subtopic-header">
-          <div class="subtopic-title-row">
-            <h4>${st.name}</h4>
-            <span class="badge">${st.videoIds.length} video${st.videoIds.length === 1 ? '' : 's'}</span>
+          <div class="subtopic-header-left">
+            <svg class="subtopic-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+            <div class="subtopic-title-block">
+              <div class="subtopic-title-row">
+                <h4>${st.name}</h4>
+                <span class="badge">${totalVideosCount} video${totalVideosCount === 1 ? '' : 's'}</span>
+              </div>
+              <p class="subtopic-brief">${st.brief}</p>
+            </div>
           </div>
-          <p class="subtopic-brief">${st.brief}</p>
+          <div class="subtopic-header-right">
+            <button type="button" class="btn-select-toggle" data-st-idx="${idx}">Select all / Deselect</button>
+          </div>
         </div>
-        <div class="subtopic-videos">
-          ${videosHtml || '<p class="text-muted">No videos assigned.</p>'}
+        <div class="subtopic-videos-wrap">
+          <div class="subtopic-cards-container" id="st-cards-${idx}"></div>
+          ${limitInitial ? `<button type="button" class="btn-show-more" data-st-idx="${idx}">Show ${totalVideosCount - 2} more videos</button>` : ''}
         </div>
       `;
 
-      subtopicsList.appendChild(card);
+      // Header click toggles open/collapsed
+      const headerEl = accordion.querySelector('.subtopic-header');
+      headerEl.addEventListener('click', (e) => {
+        if (e.target.closest('.btn-select-toggle')) return;
+        accordion.classList.toggle('open');
+      });
+
+      // Select all / Deselect handler
+      const selectToggleBtn = accordion.querySelector('.btn-select-toggle');
+      selectToggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const allSelected = st.videoIds.every((id) => selectedVideoIds.has(id));
+        if (allSelected) {
+          st.videoIds.forEach((id) => selectedVideoIds.delete(id));
+        } else {
+          st.videoIds.forEach((id) => selectedVideoIds.add(id));
+        }
+        // Update checkboxes inside this accordion
+        accordion.querySelectorAll('.video-card-cb').forEach((cb) => {
+          cb.checked = !allSelected;
+        });
+        updateNotebookLMCount();
+      });
+
+      // Show more button handler
+      const showMoreBtn = accordion.querySelector('.btn-show-more');
+      if (showMoreBtn) {
+        showMoreBtn.addEventListener('click', () => {
+          renderVideoCards(st, accordion.querySelector(`#st-cards-${idx}`), false);
+          showMoreBtn.remove();
+        });
+      }
+
+      // Render video cards
+      renderVideoCards(st, accordion.querySelector(`#st-cards-${idx}`), limitInitial);
+      subtopicsList.appendChild(accordion);
     });
   }
 
-  // --------------------------------------------------------------------------
-  // NotebookLM 50-Link Copy
-  // --------------------------------------------------------------------------
+  function renderVideoCards(subTopic, container, limitToTwo = false) {
+    container.innerHTML = '';
+    const vidsToRender = limitToTwo ? subTopic.videoIds.slice(0, 2) : subTopic.videoIds;
 
-  btnCopyNotebookLM.addEventListener('click', async () => {
-    if (!currentSyllabus) return;
+    vidsToRender.forEach((vidId) => {
+      const detail = videoDetailsMap.get(vidId) || {
+        videoId: vidId,
+        title: `Video (${vidId})`,
+        thumbnailUrl: `https://i.ytimg.com/vi/${vidId}/mqdefault.jpg`,
+        channelName: '',
+        duration: '',
+        publishedAt: '',
+        viewCount: null,
+        likeCount: null,
+        chapters: [],
+        source: '',
+      };
 
-    const allIds = [];
-    currentSyllabus.subTopics.forEach((st) => {
-      st.videoIds.forEach((id) => {
-        if (!allIds.includes(id)) allIds.push(id);
+      const durationText = formatDuration(detail.duration);
+      const viewsText = formatNumber(detail.viewCount) ? `${formatNumber(detail.viewCount)} views` : '';
+      const likesText = formatNumber(detail.likeCount) ? `${formatNumber(detail.likeCount)} likes` : '';
+      const relativeTime = formatRelativeTime(detail.publishedAt);
+      const sourceText = detail.source || '';
+
+      // Muted dot-separated row (no like ratio, no high engagement)
+      const metaParts = [viewsText, likesText, relativeTime, sourceText].filter(Boolean);
+      const metaRowHtml = metaParts.join(' · ');
+
+      // Monospace Chapters Grid
+      let chaptersHtml = '';
+      if (detail.chapters && detail.chapters.length > 0) {
+        const chapterItems = detail.chapters
+          .map(
+            (c) =>
+              `<a href="https://www.youtube.com/watch?v=${vidId}&t=${timeToSeconds(c.time)}s" target="_blank" rel="noopener" class="chapter-item">
+                <span class="chapter-time">${c.time}</span>
+                <span>${c.label}</span>
+              </a>`
+          )
+          .join('');
+
+        chaptersHtml = `
+          <div class="chapters-accordion">
+            <button type="button" class="chapters-trigger" onclick="const g = this.nextElementSibling; g.style.display = g.style.display === 'none' ? 'grid' : 'none';">
+              <span>Chapters (${detail.chapters.length})</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+            <div class="chapters-grid" style="display: none;">
+              ${chapterItems}
+            </div>
+          </div>
+        `;
+      }
+
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      const isChecked = selectedVideoIds.has(vidId);
+
+      card.innerHTML = `
+        <div class="video-checkbox-col">
+          <input type="checkbox" class="video-card-cb" data-vid="${vidId}" ${isChecked ? 'checked' : ''}>
+        </div>
+        <a href="https://www.youtube.com/watch?v=${vidId}" target="_blank" rel="noopener" class="video-thumb-link">
+          <img src="${detail.thumbnailUrl || `https://i.ytimg.com/vi/${vidId}/mqdefault.jpg`}" alt="" class="video-thumb" loading="lazy">
+          ${durationText ? `<span class="video-duration">${durationText}</span>` : ''}
+        </a>
+        <div class="video-content">
+          <a href="https://www.youtube.com/watch?v=${vidId}" target="_blank" rel="noopener" class="video-title-link">
+            ${detail.title}
+          </a>
+          ${detail.channelName ? `<div class="video-channel">${detail.channelName}</div>` : ''}
+          ${metaRowHtml ? `<div class="video-meta-row">${metaRowHtml}</div>` : ''}
+          ${chaptersHtml}
+        </div>
+      `;
+
+      // Checkbox click stops propagation and updates selection set
+      const cb = card.querySelector('.video-card-cb');
+      cb.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (cb.checked) {
+          selectedVideoIds.add(vidId);
+        } else {
+          selectedVideoIds.delete(vidId);
+        }
+        updateNotebookLMCount();
       });
-    });
 
-    if (!allIds.length) {
-      showToast('No videos in current syllabus.', 'error');
+      container.appendChild(card);
+    });
+  }
+
+  function updateNotebookLMCount() {
+    notebooklmCountEl.textContent = Math.min(selectedVideoIds.size, 50);
+  }
+
+  // --------------------------------------------------------------------------
+  // NotebookLM Copy (With Specific Toast Reminder)
+  // --------------------------------------------------------------------------
+  btnCopyNotebookLM.addEventListener('click', async () => {
+    let idsToCopy = Array.from(selectedVideoIds);
+    if (!idsToCopy.length && currentSyllabus) {
+      currentSyllabus.subTopics.forEach((st) => {
+        st.videoIds.forEach((id) => {
+          if (!idsToCopy.includes(id)) idsToCopy.push(id);
+        });
+      });
+    }
+
+    if (!idsToCopy.length) {
+      showToast('No videos selected in current syllabus.', 'error');
       return;
     }
 
-    // Google NotebookLM allows max 50 sources per notebook
-    const notebookLinks = allIds
+    const count = Math.min(idsToCopy.length, 50);
+    const links = idsToCopy
       .slice(0, 50)
       .map((id) => `https://www.youtube.com/watch?v=${id}`)
       .join('\n');
 
     try {
-      await navigator.clipboard.writeText(notebookLinks);
-      const count = Math.min(allIds.length, 50);
-      showToast(
-        `Copied ${count} link${count === 1 ? '' : 's'} to clipboard! (Ready to paste directly into Google NotebookLM sources)`,
-        'success'
-      );
+      await navigator.clipboard.writeText(links);
+      showToast(`Copied ${count} links — in NotebookLM, open Add sources → Website and paste.`, 'success');
     } catch {
-      showToast('Clipboard access denied. Please allow clipboard permissions.', 'error');
+      showToast('Clipboard access was blocked. Please allow permissions.', 'error');
     }
   });
 
   // --------------------------------------------------------------------------
+  // Chatbot-Style Guided FAQ & Feature Request Drawer (Zero AI Tokens)
+  // --------------------------------------------------------------------------
+  btnFaqTrigger.addEventListener('click', () => {
+    const isHidden = faqDrawer.style.display === 'none';
+    faqDrawer.style.display = isHidden ? 'flex' : 'none';
+    if (isHidden && !faqChatBody.hasChildNodes()) {
+      renderInitialFaq();
+    }
+  });
+
+  btnFaqClose.addEventListener('click', () => {
+    faqDrawer.style.display = 'none';
+  });
+
+  const FAQ_ITEMS = [
+    {
+      id: 'faq-1',
+      question: 'How do I get my watch-history.json?',
+      answer: `Open <a href="https://takeout.google.com/settings/takeout/custom/youtube" target="_blank" rel="noopener">Google Takeout (YouTube)</a> &rarr; Deselect all except <strong>history</strong> &rarr; Choose <strong>JSON</strong> format &rarr; Create export, download the zip, and drop <code>watch-history.json</code> into the upload area!`,
+    },
+    {
+      id: 'faq-2',
+      question: "Why can't I load my Watch Later playlist?",
+      answer: `YouTube's public API restricts third-party access to private system playlists like 'Watch Later'. To include it, export your playlists from Google Takeout as CSV and drop <code>Watch later.csv</code> above!`,
+    },
+    {
+      id: 'faq-3',
+      question: 'Can I filter by a specific YouTube channel?',
+      answer: `Yes! Enter the channel name in the top target input (e.g., <code>Career 247 channel</code> or <code>English with Lucy</code>). You can also combine channel and topic like <code>Python from Tech With Tim</code>.`,
+    },
+    {
+      id: 'faq-4',
+      question: 'How do I paste links into NotebookLM?',
+      answer: `Click <strong>Copy for NotebookLM</strong> to copy your curated links. Then open <a href="https://notebooklm.google.com" target="_blank" rel="noopener">NotebookLM</a>, open your notebook, click <strong>Add sources &rarr; Website</strong>, and paste the links.`,
+    },
+    {
+      id: 'faq-5',
+      question: 'Is my watch history saved anywhere?',
+      answer: `Never. Watch history files are parsed <strong>100% locally in your browser</strong>. We have zero database storage. Only the titles and channels of matching videos are sent transiently to Gemini for syllabus clustering.`,
+    },
+    {
+      id: 'faq-6',
+      question: 'Something else / Request a feature',
+      isFeatureRequest: true,
+    },
+  ];
+
+  function renderInitialFaq() {
+    faqChatBody.innerHTML = '';
+    const botMsg = document.createElement('div');
+    botMsg.className = 'faq-msg faq-msg-bot';
+    botMsg.innerHTML = `
+      <div class="faq-bubble">
+        Hi there! How can I help you today? Pick a question below or submit a feature idea:
+      </div>
+      <div class="faq-chips-grid">
+        ${FAQ_ITEMS.map((item) => `<button type="button" class="faq-chip" data-faq-id="${item.id}">${item.question}</button>`).join('')}
+      </div>
+    `;
+
+    faqChatBody.appendChild(botMsg);
+
+    // Bind chip clicks
+    botMsg.querySelectorAll('.faq-chip').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const faqId = chip.getAttribute('data-faq-id');
+        const item = FAQ_ITEMS.find((f) => f.id === faqId);
+        if (item) handleFaqSelect(item);
+      });
+    });
+  }
+
+  function handleFaqSelect(item) {
+    // 1. User Message
+    const userMsg = document.createElement('div');
+    userMsg.className = 'faq-msg faq-msg-user';
+    userMsg.innerHTML = `<div class="faq-bubble">${item.question}</div>`;
+    faqChatBody.appendChild(userMsg);
+
+    // 2. Bot Response
+    const botMsg = document.createElement('div');
+    botMsg.className = 'faq-msg faq-msg-bot';
+
+    if (item.isFeatureRequest) {
+      botMsg.innerHTML = `
+        <div class="faq-bubble">
+          What would you like to ask or see in the next version?
+          <div class="faq-input-form">
+            <textarea id="faq-feedback-text" rows="3" placeholder="Share your question or feature idea..."></textarea>
+            <div class="faq-input-note">Logged anonymously to improve v2 — don't include personal info</div>
+            <button type="button" id="btn-submit-feedback" class="btn btn-primary btn-sm">Send</button>
+          </div>
+        </div>
+      `;
+      faqChatBody.appendChild(botMsg);
+      faqChatBody.scrollTop = faqChatBody.scrollHeight;
+
+      const submitBtn = botMsg.querySelector('#btn-submit-feedback');
+      const textarea = botMsg.querySelector('#faq-feedback-text');
+      submitBtn.addEventListener('click', async () => {
+        const val = textarea.value.trim();
+        if (!val) return;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+
+        try {
+          await fetch('/api/feedback', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: val, timestamp: new Date().toISOString() }),
+          });
+        } catch (e) {
+          console.warn('Feedback send failed:', e);
+        }
+
+        const replyMsg = document.createElement('div');
+        replyMsg.className = 'faq-msg faq-msg-bot';
+        replyMsg.innerHTML = `
+          <div class="faq-bubble">
+            Thank you! Your feedback has been logged anonymously to help shape v2.
+          </div>
+          <button type="button" class="btn-ask-another">Ask another question</button>
+        `;
+        faqChatBody.appendChild(replyMsg);
+        replyMsg.querySelector('.btn-ask-another').addEventListener('click', renderInitialFaq);
+        faqChatBody.scrollTop = faqChatBody.scrollHeight;
+      });
+    } else {
+      botMsg.innerHTML = `
+        <div class="faq-bubble">${item.answer}</div>
+        <button type="button" class="btn-ask-another">Ask another question</button>
+      `;
+      faqChatBody.appendChild(botMsg);
+      botMsg.querySelector('.btn-ask-another').addEventListener('click', renderInitialFaq);
+    }
+
+    faqChatBody.scrollTop = faqChatBody.scrollHeight;
+  }
+
+  // --------------------------------------------------------------------------
   // UI States
   // --------------------------------------------------------------------------
-
   function showLoading(title, subtitle) {
     emptyState.style.display = 'none';
     syllabusContainer.style.display = 'none';
@@ -666,6 +962,7 @@
     emptyState.style.display = 'block';
   }
 
-  // Initialize
+  // Initialize Theme and live video counts
+  initTheme();
   updateVideoCounts();
 })();

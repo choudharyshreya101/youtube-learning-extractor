@@ -17,6 +17,7 @@ class Settings(BaseSettings):
 
     GEMINI_API_KEY: str = ""
     YOUTUBE_API_KEY: str = ""
+    FEEDBACK_WEBHOOK_URL: str = ""
     PORT: int = 8000
 
 

@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.config import get_settings
-from app.routes import ai, demo, youtube
+from app.routes import ai, demo, feedback, youtube
 
 logging.basicConfig(
     level=logging.INFO,
@@ -38,6 +38,7 @@ app.add_middleware(
 app.include_router(demo.router)
 app.include_router(ai.router)
 app.include_router(youtube.router)
+app.include_router(feedback.router)
 
 # Static files directory
 _STATIC_DIR = pathlib.Path(__file__).resolve().parent / "static"
