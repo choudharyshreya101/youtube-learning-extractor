@@ -3,312 +3,398 @@
   "isTimeSensitive": false,
   "subTopics": [
     {
-      "name": "Spoken Fluency",
-      "brief": "Practical exercises and vocal techniques for improving day-to-day spoken conversational fluency.",
-      "videoIds": ["iCvmsMzlF7o", "c0KYU2j0TM4", "HAnw168huqA", "Y6bbMQXQ180", "3JZ_D3ELwOQ"],
+      "name": "Foundations of Spoken Fluency",
+      "brief": "Core daily speaking habits, sentence framing, and pronunciation techniques for natural fluency.",
+      "videoIds": [
+        "27Ethdd1yu4",
+        "AfZmcOuKtkE",
+        "hM1hah6ELO8",
+        "sTSyrXglXjA"
+      ],
       "videos": [
         {
-          "videoId": "iCvmsMzlF7o",
-          "title": "How to Speak So That People Want to Listen",
-          "channelName": "Julian Treasure",
-          "channelId": "UCu2O1eQ1k1g-Y4h3g3d5v8Q",
-          "subscriberCount": 1820000,
-          "viewCount": 54200000,
-          "likeCount": 1940000,
-          "duration": "PT9M58S",
-          "publishedAt": "2014-06-27T10:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/iCvmsMzlF7o/mqdefault.jpg",
-          "description": "Have you ever felt like you're talking, but nobody is listening? Julian Treasure demonstrates the 7 deadly sins of speaking and how to use the vocal toolbox with powerful exercises.",
-          "chapters": [
-            {"time": "0:00", "label": "The 7 deadly sins of speaking"},
-            {"time": "2:30", "label": "HAIL: 4 powerful foundations"},
-            {"time": "5:15", "label": "Vocal toolbox: register, timbre, prosody"},
-            {"time": "7:40", "label": "Engine warm-up exercises"}
-          ],
+          "videoId": "27Ethdd1yu4",
+          "title": "5 Easy Steps To Speak In ENGLISH Fluently And Confidently | English Speaking Tricks | BeerBiceps",
+          "channelName": "BeerBiceps",
+          "channelId": "UCPxMZIFE856tbTfdkdjzTSQ",
+          "subscriberCount": null,
+          "viewCount": 13959428,
+          "likeCount": 566821,
+          "duration": "PT7M8S",
+          "publishedAt": "2018-05-17T08:39:17Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/27Ethdd1yu4/mqdefault.jpg",
+          "description": "Meditation Playlist : https://www.youtube.com/watch?v=q5thMTntbOY&list=PLfNW_1ECVaTioa4C5cWuNGOy5-T4NG8gr\n\n🎥 Watch Our PODCAST CLIPS (Highlights of our podcast) : \nhttps://www.youtube.com/c/TheRanveerShowClips\n\n🎧 Listen To #TheRanveerShow On Spotify : https://open.spotify.com/show/6ZcvVBPQ2ToLXEWVba",
+          "chapters": [],
           "isDurationShort": false,
           "source": "Account 2 (Study)"
         },
         {
-          "videoId": "c0KYU2j0TM4",
-          "title": "10 Ways to Have a Better Conversation",
-          "channelName": "Celeste Headlee",
-          "channelId": "UCpuBMiqMKqOT6WW0tbbXxLA",
-          "subscriberCount": 2100000,
-          "viewCount": 32800000,
-          "likeCount": 1150000,
-          "duration": "PT11M44S",
-          "publishedAt": "2016-03-08T14:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/c0KYU2j0TM4/mqdefault.jpg",
-          "description": "Celeste Headlee shares 10 useful rules for conversational competence: don't multitask, listen actively, stay out of the weeds, and be prepared to be amazed.",
+          "videoId": "AfZmcOuKtkE",
+          "title": "Do These 6 Things Every Day to Become Fluent in English",
+          "channelName": "English At The Ready",
+          "channelId": "UC9hmmgCH3AJU0_3xZcoFKxw",
+          "subscriberCount": null,
+          "viewCount": 1088421,
+          "likeCount": 43019,
+          "duration": "PT8M49S",
+          "publishedAt": "2025-02-17T15:00:10Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/AfZmcOuKtkE/mqdefault.jpg",
+          "description": "Want to become fluent in English? Do these 6 things every day! \n\n📚 Improve your English speaking skills! Apply to study with me: https://www.englishattheready.com/start\n\n📹Watch This Next: https://youtu.be/Y-sdqXlV3jQ?feature=shared\n\nConnect with me: \nWebsite: https://www.englishattheready.com\nInstag",
           "chapters": [
-            {"time": "0:00", "label": "Why conversational competence matters"},
-            {"time": "2:10", "label": "Rule 1-3: Don't pontificate & multitask"},
-            {"time": "5:30", "label": "Rule 4-7: Use open-ended questions"},
-            {"time": "8:50", "label": "Rule 8-10: Listen and be brief"}
-          ],
-          "isDurationShort": false,
-          "source": "Account 2 (Study)"
-        },
-        {
-          "videoId": "HAnw168huqA",
-          "title": "Think Fast, Talk Smart: Communication Techniques",
-          "channelName": "Stanford Graduate School of Business",
-          "channelId": "UCbaXq7sK6gN15Xp_r9oF8aQ",
-          "subscriberCount": 2450000,
-          "viewCount": 42100000,
-          "likeCount": 1380000,
-          "duration": "PT58M20S",
-          "publishedAt": "2014-11-20T12:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/HAnw168huqA/mqdefault.jpg",
-          "description": "Matt Abrahams, Stanford lecturer on strategic communication, explores practical techniques to overcome anxiety and speak spontaneously in meetings and presentations.",
-          "chapters": [
-            {"time": "0:00", "label": "Anxiety management techniques"},
-            {"time": "12:15", "label": "Ground rules of spontaneous speaking"},
-            {"time": "24:30", "label": "Structures that work: What, So What, Now What"},
-            {"time": "42:00", "label": "Live audience application"}
+            {
+              "time": "0:00",
+              "label": "Intro"
+            },
+            {
+              "time": "0:43",
+              "label": "You need to speak more"
+            },
+            {
+              "time": "1:52",
+              "label": "Set your phone and computer to English"
+            },
+            {
+              "time": "2:59",
+              "label": "Listen to English"
+            },
+            {
+              "time": "4:00",
+              "label": "Free video training"
+            },
+            {
+              "time": "4:48",
+              "label": "Practice pronunciation in the mirror"
+            }
           ],
           "isDurationShort": false,
           "source": "Account 1 (Personal)"
         },
         {
-          "videoId": "Y6bbMQXQ180",
-          "title": "How to Sound Smart in Your TEDx Talk",
-          "channelName": "Will Stephen",
-          "channelId": "UCHaHD477h-FeBbVh9Sh7syA",
-          "subscriberCount": 3890000,
-          "viewCount": 17800000,
-          "likeCount": 790000,
-          "duration": "PT5M55S",
-          "publishedAt": "2015-05-18T08:30:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/Y6bbMQXQ180/mqdefault.jpg",
-          "description": "Will Stephen demonstrates how physical delivery, facial expressions, vocal inflection, and body posture make any speech sound profoundly compelling.",
-          "chapters": [
-            {"time": "0:00", "label": "The illusion of content"},
-            {"time": "2:10", "label": "Pacing, spectacles, and physical gestures"},
-            {"time": "4:00", "label": "The crescendo and memorable close"}
-          ],
-          "isDurationShort": false,
-          "source": "Playlist"
-        },
-        {
-          "videoId": "3JZ_D3ELwOQ",
-          "title": "Assessing Spoken Fluency and Interactive Communication",
-          "channelName": "Cambridge English",
-          "channelId": "UCz4tgANd4rybiX5-hy_lD_A",
-          "subscriberCount": 3200000,
-          "viewCount": 2480000,
-          "likeCount": 115000,
-          "duration": "PT12M30S",
-          "publishedAt": "2021-09-05T13:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/3JZ_D3ELwOQ/mqdefault.jpg",
-          "description": "Comprehensive rubric breakdown on spoken interaction, hesitation reduction, grammar range, and pronunciation clarity.",
-          "chapters": [
-            {"time": "0:00", "label": "Assessment criteria overview"},
-            {"time": "3:00", "label": "Fluency and natural coherence"},
-            {"time": "6:45", "label": "Lexical variety and discourse markers"},
-            {"time": "9:30", "label": "Intonation and sentence stress"}
-          ],
+          "videoId": "hM1hah6ELO8",
+          "title": "Master English Speaking in 21 Days🔥| 7 Easy Tips to Speak English| Prashant Kirad",
+          "channelName": "ExpHub - Prashant Kirad",
+          "channelId": "UCgoyBmLOMNWmsiVkj-MezyQ",
+          "subscriberCount": null,
+          "viewCount": 15346305,
+          "likeCount": 684044,
+          "duration": "PT13M53S",
+          "publishedAt": "2024-08-06T13:12:09Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/hM1hah6ELO8/mqdefault.jpg",
+          "description": "How to Speak English Easily \n\nDuolingo app link 👇\nhttps://app.adjust.net.in/1a3mvnmx\n\nFollow your Prashant bhaiya on Instagram🙌\nhttps://instagram.com/prashant_.kirad?igshid=YWJhMjlhZTc=\n\nOur Class 9th and 10th Channel 👇\nhttps://youtube.com/@exphub10th?si=xxwc-azRDqe7SHbT\n\nJoin our telegram channel f",
+          "chapters": [],
           "isDurationShort": false,
           "source": "Account 2 (Study)"
+        },
+        {
+          "videoId": "sTSyrXglXjA",
+          "title": "Do These 5 Things Every Day to Speak English Fluently!",
+          "channelName": "English At The Ready",
+          "channelId": "UC9hmmgCH3AJU0_3xZcoFKxw",
+          "subscriberCount": null,
+          "viewCount": 43472,
+          "likeCount": 1571,
+          "duration": "PT6M40S",
+          "publishedAt": "2026-11-22T04:14:34Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/sTSyrXglXjA/mqdefault.jpg",
+          "description": "📚 Improve your English speaking skills! Apply to study with me: https://www.englishattheready.com/start\n\n📹Watch This Next: https://youtu.be/Y-sdqXlV3jQ?feature=shared\n\nRadio Alarm Clock App for iPhone (not sponsored): https://apps.apple.com/be/app/radio-alarm-clock-sleep-timer/id1350722971\n\nConnect ",
+          "chapters": [
+            {
+              "time": "0:00",
+              "label": "Intro"
+            },
+            {
+              "time": "0:33",
+              "label": "Wake up to English"
+            },
+            {
+              "time": "1:55",
+              "label": "Read out loud"
+            },
+            {
+              "time": "2:34",
+              "label": "Verbalize your actions"
+            },
+            {
+              "time": "3:30",
+              "label": "Read comics"
+            },
+            {
+              "time": "4:37",
+              "label": "Listen to English music"
+            }
+          ],
+          "isDurationShort": false,
+          "source": "Account 1 (Personal)"
         }
       ]
     },
     {
-      "name": "Business English",
-      "brief": "Professional workplace communication skills for meetings, presentations, emails, and executive presence.",
-      "videoIds": ["UF8uR6Z6KLc", "u4ZoJKF_VuA", "R1vskiVDwl4", "8jPQjjsBbIc"],
+      "name": "Vocabulary & Natural Phrasing",
+      "brief": "High-frequency idioms, collocations, and expressive vocabulary to replace basic repetitive phrasing.",
+      "videoIds": [
+        "TR0JZiapxXM",
+        "NG44swIzykA",
+        "vqWvqUTHHkM",
+        "CqRloBkyqQs"
+      ],
       "videos": [
         {
-          "videoId": "UF8uR6Z6KLc",
-          "title": "Steve Jobs' 2005 Stanford Commencement Address",
-          "channelName": "Stanford University",
-          "channelId": "UCfQMF0hRl9q1Bb_PbBNaK1A",
-          "subscriberCount": 1950000,
-          "viewCount": 43500000,
-          "likeCount": 1420000,
-          "duration": "PT15M04S",
-          "publishedAt": "2008-03-07T12:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/UF8uR6Z6KLc/mqdefault.jpg",
-          "description": "Steve Jobs delivers three distinct stories about connecting the dots, love and loss, and death — a masterclass in concise, narrative business storytelling.",
+          "videoId": "TR0JZiapxXM",
+          "title": "50+ Advanced Phrases For English Conversations",
+          "channelName": "mmmEnglish",
+          "channelId": "UCrRiVfHqBIIvSgKmgnSY66g",
+          "subscriberCount": null,
+          "viewCount": 7288218,
+          "likeCount": 165725,
+          "duration": "PT16M34S",
+          "publishedAt": "2020-03-06T10:45:00Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/TR0JZiapxXM/mqdefault.jpg",
+          "description": "Learn 50+ Common English phrases used in advanced conversations! Improve your speaking skills and learn advanced techniques to speak confidently! \nCheck out Hey Lady!  👉 https://mmm.heylady.io/join A speaking practice community that helps women around the world to meet, make friends and practise spe",
           "chapters": [
-            {"time": "0:00", "label": "Story 1: Connecting the dots"},
-            {"time": "5:00", "label": "Story 2: Love and loss"},
-            {"time": "9:00", "label": "Story 3: Death and urgency"},
-            {"time": "13:30", "label": "Stay hungry, stay foolish"}
+            {
+              "time": "00:00",
+              "label": "Introduction"
+            },
+            {
+              "time": "00:59",
+              "label": "Why this is important"
+            },
+            {
+              "time": "02:10",
+              "label": "Asking for other people's opinions"
+            },
+            {
+              "time": "03:26",
+              "label": "When you want to interrupt"
+            },
+            {
+              "time": "05:25",
+              "label": "The Ladies Project - Hey Lady!"
+            },
+            {
+              "time": "06:31",
+              "label": "When you've gone off topic"
+            }
           ],
           "isDurationShort": false,
           "source": "Account 2 (Study)"
         },
         {
-          "videoId": "u4ZoJKF_VuA",
-          "title": "Start With Why: How Great Leaders Inspire",
-          "channelName": "Simon Sinek",
-          "channelId": "UCa_S5k1c5p-gqM_v8Q8aQ",
-          "subscriberCount": 2180000,
-          "viewCount": 19200000,
-          "likeCount": 810000,
-          "duration": "PT18M04S",
-          "publishedAt": "2013-09-18T10:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/u4ZoJKF_VuA/mqdefault.jpg",
-          "description": "Why some organizations command premium loyalty and inspire action while others struggle to communicate their core value proposition.",
+          "videoId": "NG44swIzykA",
+          "title": "Collocations to Supercharge Your Vocabulary (B2 + C1 + C2)",
+          "channelName": "Interactive English",
+          "channelId": "UC2SUoo36iHgVLEK7EEVPIFQ",
+          "subscriberCount": null,
+          "viewCount": 325926,
+          "likeCount": 17008,
+          "duration": "PT15M52S",
+          "publishedAt": "2023-07-05T10:00:27Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/NG44swIzykA/mqdefault.jpg",
+          "description": "*** CAMBLY DISCOUNT ***\n1 Week Exclusive Promo | 1:1 and Group English Lessons with native speakers \n👉 https://bit.ly/INTERACTIVEGROUPS \n\n--------------------\n\nLet's take your vocabulary to the next level with some common collocations, which are words that are frequently used together. \n\nIn this les",
           "chapters": [
-            {"time": "0:00", "label": "The Golden Circle: Why, How, What"},
-            {"time": "5:30", "label": "Why vs What in commercial messaging"},
-            {"time": "11:00", "label": "Diffusion of innovation and belief"},
-            {"time": "15:20", "label": "Communicating purpose to teams"}
+            {
+              "time": "0:00",
+              "label": "B2 Collocations"
+            },
+            {
+              "time": "2:51",
+              "label": "Cambly Announcement"
+            },
+            {
+              "time": "4:44",
+              "label": "B2 Collocations (Cont.)"
+            },
+            {
+              "time": "8:31",
+              "label": "C1 Collocations"
+            },
+            {
+              "time": "12:23",
+              "label": "C2 Collocations"
+            }
           ],
           "isDurationShort": false,
           "source": "Account 1 (Personal)"
         },
         {
-          "videoId": "R1vskiVDwl4",
-          "title": "Try Something New for 30 Days",
-          "channelName": "Matt Cutts",
-          "channelId": "UCzYn9Fk7wL3v5-gqM8aQ12",
-          "subscriberCount": 890000,
-          "viewCount": 15400000,
-          "likeCount": 630000,
-          "duration": "PT3M27S",
-          "publishedAt": "2011-07-01T15:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/R1vskiVDwl4/mqdefault.jpg",
-          "description": "Matt Cutts provides a short, memorable framework for setting incremental challenges, building self-confidence, and communicating personal milestones.",
+          "videoId": "vqWvqUTHHkM",
+          "title": "Advanced (C1) Phrases That Will Transform Your Speaking Skills",
+          "channelName": "Interactive English",
+          "channelId": "UC2SUoo36iHgVLEK7EEVPIFQ",
+          "subscriberCount": null,
+          "viewCount": 380885,
+          "likeCount": 21356,
+          "duration": "PT17M3S",
+          "publishedAt": "2023-05-31T09:00:41Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/vqWvqUTHHkM/mqdefault.jpg",
+          "description": "Join my speaking course: https://www.interactiveenglishvideos.com/speak-up  🎊 \n***Use the code SPEAK25 to get $25 off. 🤗 \n\nLet's learn some advanced (C1) phrases to help you build your vocabulary. This vocabulary is at a C1 level, which is one of Cambridge's highest levels of proficiency. \n\nI'll tea",
           "chapters": [
-            {"time": "0:00", "label": "Setting incremental challenges"},
-            {"time": "1:30", "label": "Building habits through small daily actions"},
-            {"time": "2:45", "label": "Key takeaways for workplace momentum"}
-          ],
-          "isDurationShort": false,
-          "source": "Playlist"
-        },
-        {
-          "videoId": "8jPQjjsBbIc",
-          "title": "The Power of Vulnerability in Professional Life",
-          "channelName": "Brené Brown",
-          "channelId": "UCvH0nP4NzS9M_v8Q8aQ123",
-          "subscriberCount": 1420000,
-          "viewCount": 21800000,
-          "likeCount": 870000,
-          "duration": "PT20M19S",
-          "publishedAt": "2011-01-03T11:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/8jPQjjsBbIc/mqdefault.jpg",
-          "description": "Brené Brown studies human connection — our ability to empathize, belong, and communicate with authentic authority across teams.",
-          "chapters": [
-            {"time": "0:00", "label": "Human connection and authenticity"},
-            {"time": "6:15", "label": "The courage to be imperfect"},
-            {"time": "12:30", "label": "Compassionate communication in leadership"},
-            {"time": "17:45", "label": "Closing framework"}
-          ],
-          "isDurationShort": false,
-          "source": "Account 2 (Study)"
-        }
-      ]
-    },
-    {
-      "name": "Vocabulary & Phrases",
-      "brief": "Build a richer vocabulary with high-frequency idioms, collocations, clear articulation, and structured thinking.",
-      "videoIds": ["arj7oStGLkU", "7Pq-S557XQU", "JGwWNGJdvx8", "OPf0YbXqDm0", "fJ9rUzIMcZQ"],
-      "videos": [
-        {
-          "videoId": "arj7oStGLkU",
-          "title": "Inside the Mind of a Master Procrastinator",
-          "channelName": "Tim Urban",
-          "channelId": "UCu2O1eQ1k1g-Y4h3g3d5v8Q",
-          "subscriberCount": 3100000,
-          "viewCount": 38900000,
-          "likeCount": 1650000,
-          "duration": "PT14M03S",
-          "publishedAt": "2016-04-06T10:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/arj7oStGLkU/mqdefault.jpg",
-          "description": "Tim Urban explains cognitive focus, mental models, and structured metaphors with vivid visual storytelling and relatable analogies.",
-          "chapters": [
-            {"time": "0:00", "label": "The rational decision maker"},
-            {"time": "3:20", "label": "The instant gratification monkey"},
-            {"time": "7:15", "label": "The panic monster in action"},
-            {"time": "11:00", "label": "Long-term unprompted procrastination"}
-          ],
-          "isDurationShort": false,
-          "source": "Account 1 (Personal)"
-        },
-        {
-          "videoId": "7Pq-S557XQU",
-          "title": "Top Rhetorical Devices for Powerful Delivery",
-          "channelName": "Toastmasters International",
-          "channelId": "UCpuBMiqMKqOT6WW0tbbXxLA",
-          "subscriberCount": 340000,
-          "viewCount": 1120000,
-          "likeCount": 48000,
-          "duration": "PT10M14S",
-          "publishedAt": "2022-03-12T14:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/7Pq-S557XQU/mqdefault.jpg",
-          "description": "Learn classic rhetorical tools — anaphora, the rule of three, antithesis, and triadic phrasing — to make ideas memorable and persuasive.",
-          "chapters": [
-            {"time": "0:00", "label": "Anaphora and deliberate repetition"},
-            {"time": "3:00", "label": "The rule of three in English speech"},
-            {"time": "6:15", "label": "Metaphors and sensory imagery"},
-            {"time": "8:45", "label": "Rhetorical question timing"}
+            {
+              "time": "0:00",
+              "label": "first and foremost"
+            },
+            {
+              "time": "2:10",
+              "label": "beat around the bush"
+            },
+            {
+              "time": "3:25",
+              "label": "the next best thing"
+            },
+            {
+              "time": "4:32",
+              "label": "Speaking Course Announcement"
+            },
+            {
+              "time": "5:51",
+              "label": "Easier said than done."
+            },
+            {
+              "time": "7:43",
+              "label": "have an ear for (something)"
+            }
           ],
           "isDurationShort": false,
           "source": "Account 2 (Study)"
         },
         {
-          "videoId": "JGwWNGJdvx8",
-          "title": "Rhythmic Phrasing and Connected Cadence in Spoken English",
-          "channelName": "BBC Learning English",
-          "channelId": "UCHaHD477h-FeBbVh9Sh7syA",
-          "subscriberCount": 16900000,
-          "viewCount": 4200000,
-          "likeCount": 182000,
-          "duration": "PT11M33S",
-          "publishedAt": "2023-05-10T08:30:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/JGwWNGJdvx8/mqdefault.jpg",
-          "description": "Connected speech rules: linking words, elision, and rhythm cadence that make native speakers sound smooth and natural.",
-          "chapters": [
-            {"time": "0:00", "label": "Connected speech fundamentals"},
-            {"time": "2:40", "label": "Elision and assimilation examples"},
-            {"time": "6:20", "label": "Stress timing vs syllable timing"},
-            {"time": "9:15", "label": "Cadence and intonation drills"}
-          ],
-          "isDurationShort": false,
-          "source": "Playlist"
-        },
-        {
-          "videoId": "OPf0YbXqDm0",
-          "title": "50 High-Frequency English Collocations & Phrases",
-          "channelName": "English with Lucy",
-          "channelId": "UCz4tgANd4rybiX5-hy_lD_A",
-          "subscriberCount": 12800000,
-          "viewCount": 3890000,
-          "likeCount": 195000,
-          "duration": "PT18M42S",
-          "publishedAt": "2023-08-15T10:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/OPf0YbXqDm0/mqdefault.jpg",
-          "description": "50 essential collocations and natural phrase pairings for professional and casual interactions, with real-world context examples.",
-          "chapters": [
-            {"time": "0:00", "label": "Workplace and business collocations"},
-            {"time": "4:30", "label": "Daily conversation pairings"},
-            {"time": "9:15", "label": "Common error corrections"},
-            {"time": "14:00", "label": "Sentence review and practice"}
-          ],
-          "isDurationShort": false,
-          "source": "Account 2 (Study)"
-        },
-        {
-          "videoId": "fJ9rUzIMcZQ",
-          "title": "Diction, Resonance and Articulation Exercises",
+          "videoId": "CqRloBkyqQs",
+          "title": "Collocations in English - Learn English Vocabulary",
           "channelName": "Oxford Online English",
-          "channelId": "UCbaXq7sK6gN15Xp_r9oF8aQ",
-          "subscriberCount": 3400000,
-          "viewCount": 2180000,
-          "likeCount": 110000,
-          "duration": "PT14M08S",
-          "publishedAt": "2024-01-20T08:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/fJ9rUzIMcZQ/mqdefault.jpg",
-          "description": "Daily articulation drills, jaw tension release, and vowel resonance techniques to speak clearly and without strain.",
+          "channelId": "UCNbeSPp8RYKmHUliYBUDizg",
+          "subscriberCount": null,
+          "viewCount": 749541,
+          "likeCount": 18175,
+          "duration": "PT14M16S",
+          "publishedAt": "2018-08-31T07:05:44Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/CqRloBkyqQs/mqdefault.jpg",
+          "description": "In this lesson, you can learn about collocations in English. But, what are collocations? Collocation means that some words fit together, and other words don’t. \nIn this class, you’ll learn about common collocations in English, how to learn and remember collocations, and why you should focus on collo",
+          "chapters": [],
+          "isDurationShort": false,
+          "source": "Account 1 (Personal)"
+        }
+      ]
+    },
+    {
+      "name": "Professional & Business Communication",
+      "brief": "Structured workplace communication for meetings, emails, concise summaries, and executive presence.",
+      "videoIds": [
+        "PLhAzAymMsY",
+        "L5qXD9jU_i8",
+        "fzIxD1jXn44",
+        "O3kg_dWkmCA"
+      ],
+      "videos": [
+        {
+          "videoId": "PLhAzAymMsY",
+          "title": "40 English Phrases You Need for Online Meetings",
+          "channelName": "Maria Sheeran",
+          "channelId": "UC6ENI_P4BRGUu7bBF40wfiw",
+          "subscriberCount": null,
+          "viewCount": 291795,
+          "likeCount": 11734,
+          "duration": "PT5M15S",
+          "publishedAt": "2023-07-30T13:06:30Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/PLhAzAymMsY/mqdefault.jpg",
+          "description": "Let's be honest - it can be hard to find the confidence to speak up in English during meetings. \n\nAnd doing it ONLINE brings a whole new set of communication challenges!\n\nThere’s an entirely different set of Business English vocabulary that you need to know to be able to participate effectively.\n\nBu",
           "chapters": [
-            {"time": "0:00", "label": "Jaw and neck tension release"},
-            {"time": "3:10", "label": "Vowel resonance placement"},
-            {"time": "7:30", "label": "Consonant clarity drills"},
-            {"time": "11:15", "label": "Tongue twister cadence"}
+            {
+              "time": "0:00",
+              "label": "Why watch this video?"
+            },
+            {
+              "time": "0:11",
+              "label": "Small Talk"
+            },
+            {
+              "time": "0:45",
+              "label": "Starting the Meeting"
+            },
+            {
+              "time": "1:06",
+              "label": "Interrupting"
+            },
+            {
+              "time": "1:59",
+              "label": "Want a mini lesson every Monday?"
+            },
+            {
+              "time": "2:19",
+              "label": "Taking a Pause"
+            }
+          ],
+          "isDurationShort": false,
+          "source": "Account 2 (Study)"
+        },
+        {
+          "videoId": "L5qXD9jU_i8",
+          "title": "Learn Professional Communication in 10 minutes | CorporateCommunication simplified ",
+          "channelName": "Speak Bro",
+          "channelId": "UCK8vkG63m72R7YTE3wuR1Gg",
+          "subscriberCount": null,
+          "viewCount": 190844,
+          "likeCount": 3643,
+          "duration": "PT10M15S",
+          "publishedAt": "2026-08-20T06:42:46Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/L5qXD9jU_i8/mqdefault.jpg",
+          "description": "For SPEAKBRO Courses: \nVisit : https://www.speakbro.in/\n\nFor any enquiries: \nWhatsApp: 7795152022\n\nIn this 10-minute video, I’m sharing 7 powerful professional English phrases that you can immediately use in your workplace and everyday professional conversations.\n\nInstead of using the same basic wor",
+          "chapters": [],
+          "isDurationShort": false,
+          "source": "Account 1 (Personal)"
+        },
+        {
+          "videoId": "fzIxD1jXn44",
+          "title": "Presentations in English - How to Give a Presentation - Business English",
+          "channelName": "Oxford Online English",
+          "channelId": "UCNbeSPp8RYKmHUliYBUDizg",
+          "subscriberCount": null,
+          "viewCount": 2890475,
+          "likeCount": 57077,
+          "duration": "PT16M46S",
+          "publishedAt": "2018-07-26T07:07:16Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/fzIxD1jXn44/mqdefault.jpg",
+          "description": "In this lesson, you can learn how to make presentations in English.\nDo you have to make presentations in English in your job? Imagine you have to give an important presentation in English tomorrow. How would you feel about it?\nThis lesson will help you learn useful phrases and techniques to introduc",
+          "chapters": [],
+          "isDurationShort": false,
+          "source": "Account 2 (Study)"
+        },
+        {
+          "videoId": "O3kg_dWkmCA",
+          "title": "40 Essential Phrases To Host A Meeting in English",
+          "channelName": "mmmEnglish",
+          "channelId": "UCrRiVfHqBIIvSgKmgnSY66g",
+          "subscriberCount": null,
+          "viewCount": 1093184,
+          "likeCount": 25247,
+          "duration": "PT12M40S",
+          "publishedAt": "2022-10-11T12:00:16Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/O3kg_dWkmCA/mqdefault.jpg",
+          "description": "I’m sharing the exact phrases and expressions you need to host a meeting in English so that you sound confident and professional! \n👌 Host a meeting @ Hey Lady! https://mmm.heylady.io/join Get real-world speaking practice in a safe and supportive online platform created just for women! (Free 7-day tr",
+          "chapters": [
+            {
+              "time": "00:00",
+              "label": "Phrases to Lead a Meeting in English"
+            },
+            {
+              "time": "00:40",
+              "label": "Become A Confident English Speaker @ Hey Lady!"
+            },
+            {
+              "time": "01:31",
+              "label": "Phrases to Start A Meeting"
+            },
+            {
+              "time": "03:59",
+              "label": "Phrases to Set Your Meeting Up For Success"
+            },
+            {
+              "time": "07:48",
+              "label": "Phrases to Manage the Discussion"
+            },
+            {
+              "time": "11:04",
+              "label": "Phrases to End a Meeting"
+            }
           ],
           "isDurationShort": false,
           "source": "Account 1 (Personal)"
@@ -316,106 +402,106 @@
       ]
     },
     {
-      "name": "Confidence & Delivery",
-      "brief": "Mindset, body language, vocal presence, and composure to communicate with authority in any environment.",
-      "videoIds": ["Ks-_Mh1QhMc", "qp0HIF3SfI4", "CevxZvSJLk8", "dQw4w9WgXcQ"],
+      "name": "Confident Delivery & Public Speaking",
+      "brief": "Body language, vocal projection, deliberate pacing, and overcoming anxiety in high-stakes talks.",
+      "videoIds": [
+        "eIho2S0ZahI",
+        "VRJzvJ5XPQI",
+        "Edg54WnYqkE",
+        "eVFzbxmKNUw"
+      ],
       "videos": [
         {
-          "videoId": "Ks-_Mh1QhMc",
-          "title": "Your Body Language May Shape Who You Are",
-          "channelName": "Amy Cuddy",
-          "channelId": "UCa_S5k1c5p-gqM_v8Q8aQ",
-          "subscriberCount": 2340000,
-          "viewCount": 68500000,
-          "likeCount": 2100000,
-          "duration": "PT21M02S",
-          "publishedAt": "2012-10-01T14:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/Ks-_Mh1QhMc/mqdefault.jpg",
-          "description": "Body language affects how others see us, but it may also change how we see ourselves. Social psychologist Amy Cuddy shows how 'power posing' impacts chances of success.",
-          "chapters": [
-            {"time": "0:00", "label": "Nonverbal expressions of power"},
-            {"time": "4:30", "label": "Do nonverbals govern how we feel?"},
-            {"time": "9:15", "label": "The 2-minute power pose study"},
-            {"time": "14:40", "label": "Tiny tweaks leading to big changes"},
-            {"time": "18:20", "label": "Fake it until you become it"}
-          ],
+          "videoId": "eIho2S0ZahI",
+          "title": "How to Speak So That People Want to Listen | Julian Treasure | TED",
+          "channelName": "TED",
+          "channelId": "UCAuUUnT6oDeKwE6v1NGQxug",
+          "subscriberCount": null,
+          "viewCount": 52350899,
+          "likeCount": 1194499,
+          "duration": "PT9M59S",
+          "publishedAt": "2014-06-27T15:10:18Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/eIho2S0ZahI/mqdefault.jpg",
+          "description": "Have you ever felt like you're talking, but nobody is listening? Here's Julian Treasure to help you fix that. As the sound expert demonstrates some useful vocal exercises and shares tips on how to speak with empathy, he offers his vision for a sonorous world of listening and understanding. (Recorded",
+          "chapters": [],
+          "isDurationShort": false,
+          "source": "Account 2 (Study)"
+        },
+        {
+          "videoId": "VRJzvJ5XPQI",
+          "title": "Body Language Expert Explains How to Show Confidence | WIRED",
+          "channelName": "WIRED",
+          "channelId": "UCftwRNsjfRo08xYE31tkiyw",
+          "subscriberCount": null,
+          "viewCount": 13713734,
+          "likeCount": 423429,
+          "duration": "PT14M16S",
+          "publishedAt": "2021-10-18T16:00:08Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/VRJzvJ5XPQI/mqdefault.jpg",
+          "description": "Former FBI agent and body language expert Joe Navarro explains how we can project confidence through our body language. Joe takes a look at various celebrities and politicians and demonstrates the things that they do that can help them appear more confident. \r\n\r\nCheck out Joe's book \"Be Exceptional\"",
+          "chapters": [],
           "isDurationShort": false,
           "source": "Account 1 (Personal)"
         },
         {
-          "videoId": "qp0HIF3SfI4",
-          "title": "How Great Leaders Inspire Action",
-          "channelName": "Simon Sinek",
-          "channelId": "UCAuUUnT6oDeKwE6v1NGQxug",
-          "subscriberCount": 22300000,
-          "viewCount": 61480000,
-          "likeCount": 1870000,
-          "duration": "PT18M04S",
-          "publishedAt": "2010-09-29T00:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/qp0HIF3SfI4/mqdefault.jpg",
-          "description": "Simon Sinek presents the golden circle model — 'Start With Why' — and explains why some leaders and organisations inspire where others don't.",
+          "videoId": "Edg54WnYqkE",
+          "title": "NEVER Feel Anxiety Again When Giving A Speech (5 EASY Methods)",
+          "channelName": "Vinh Giang",
+          "channelId": "UC9K9Wnz6t4cLnCdTzAVrXqQ",
+          "subscriberCount": null,
+          "viewCount": 851209,
+          "likeCount": 27410,
+          "duration": "PT7M21S",
+          "publishedAt": "2024-09-10T13:45:00Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/Edg54WnYqkE/mqdefault.jpg",
+          "description": "BLACK FRIDAY SALE (link disappears Nov 27th): https://bit.ly/yt-bf-2026\n\nOver the last 8 years I've spoken on hundreds of stages in front thousands of people, and I've had my fair share of failures because I couldn't deal with the nerves and anxiety when it came to speaking in front of people.\n\nFREE",
           "chapters": [
-            {"time": "0:00", "label": "The pattern that great leaders share"},
-            {"time": "2:30", "label": "The Golden Circle: Why, How, What"},
-            {"time": "6:00", "label": "How Apple communicates"},
-            {"time": "10:45", "label": "The biology of decision making"},
-            {"time": "14:20", "label": "Why it matters for communication"}
-          ],
-          "isDurationShort": false,
-          "source": "Playlist"
-        },
-        {
-          "videoId": "CevxZvSJLk8",
-          "title": "Vocal Projection and Stage Presence Masterclass",
-          "channelName": "Charisma on Command",
-          "channelId": "UCU_W0oE_ock8bWKjALiGs8Q",
-          "subscriberCount": 6080000,
-          "viewCount": 2193400,
-          "likeCount": 101700,
-          "duration": "PT16M37S",
-          "publishedAt": "2024-04-22T15:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/CevxZvSJLk8/mqdefault.jpg",
-          "description": "Deep dive into non-verbal presence: posture, deliberate gestures, vocal breath support, and physical grounding.",
-          "chapters": [
-            {"time": "0:00", "label": "Diaphragm breathing vs chest breathing"},
-            {"time": "3:20", "label": "Finding your authentic pitch"},
-            {"time": "7:15", "label": "The power of deliberate pauses"},
-            {"time": "11:30", "label": "Commanding physical space"},
-            {"time": "14:50", "label": "Presence checklist"}
-          ],
-          "isDurationShort": false,
-          "source": "Playlist"
-        },
-        {
-          "videoId": "dQw4w9WgXcQ",
-          "title": "Handling Unexpected Surprises with Poise & Stage Confidence",
-          "channelName": "Charisma on Command",
-          "channelId": "UCU_W0oE_ock8bWKjALiGs8Q",
-          "subscriberCount": 6080000,
-          "viewCount": 4200000,
-          "likeCount": 210000,
-          "duration": "PT3M33S",
-          "publishedAt": "2023-10-05T16:00:00Z",
-          "thumbnailUrl": "https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
-          "description": "Tactics for dealing with unplanned glitches or interruptions during public delivery with humor, composure, and poise.",
-          "chapters": [
-            {"time": "0:00", "label": "Recovering from missteps"},
-            {"time": "1:15", "label": "Humor and composure under pressure"},
-            {"time": "2:30", "label": "Owning the room"}
+            {
+              "time": "0:00",
+              "label": "- Intro"
+            },
+            {
+              "time": "1:02",
+              "label": "- Method 1"
+            },
+            {
+              "time": "2:37",
+              "label": "- Method 2"
+            },
+            {
+              "time": "3:20",
+              "label": "- Method 3"
+            },
+            {
+              "time": "4:10",
+              "label": "- Method 4"
+            },
+            {
+              "time": "4:54",
+              "label": "- Method 5"
+            }
           ],
           "isDurationShort": false,
           "source": "Account 2 (Study)"
+        },
+        {
+          "videoId": "eVFzbxmKNUw",
+          "title": "How to be confident (even if you’re not) | Montana von Fliss | TEDxBellevueWomen",
+          "channelName": "TEDx Talks",
+          "channelId": "UCsT0YIqwnpJCM-mx7-gSA4Q",
+          "subscriberCount": null,
+          "viewCount": 7300870,
+          "likeCount": 191472,
+          "duration": "PT16M8S",
+          "publishedAt": "2025-03-06T18:00:35Z",
+          "thumbnailUrl": "https://i.ytimg.com/vi/eVFzbxmKNUw/mqdefault.jpg",
+          "description": "The number one question Montana von Fliss is asked is how to be more confident. Over her 16 years of coaching speakers all over the globe and 30 years as a professional actor, Montana has developed a reliable and repeatable 2-part strategy to step up in front of any audience and appear confident—eve",
+          "chapters": [],
+          "isDurationShort": false,
+          "source": "Account 1 (Personal)"
         }
       ]
     }
   ],
-  "totalVideos": 18,
-  "filteredFrom": 4820,
-  "rawStats": {
-    "totalEntries": 4820,
-    "afterDateFilter": 1240,
-    "afterShortsFilter": 980,
-    "uniqueVideos": 612,
-    "matchedTopic": 18
-  }
+  "totalVideos": 16
 }

@@ -11,6 +11,8 @@
   let videoDetailsMap = new Map();
   let selectedVideoIds = new Set();
 
+  const SESSION_STORAGE_KEY = 'yt_active_learning_track';
+
   // --------------------------------------------------------------------------
   // DOM Elements
   // --------------------------------------------------------------------------
@@ -45,7 +47,6 @@
   const loadingSubtitle = document.getElementById('loading-subtitle');
   const syllabusContainer = document.getElementById('syllabus-container');
   const syllabusTopicTitle = document.getElementById('syllabus-topic-title');
-  const badgeTimeSensitivity = document.getElementById('badge-time-sensitivity');
   const badgeTotalVideos = document.getElementById('badge-total-videos');
   const subtopicsList = document.getElementById('subtopics-list');
   const refineInput = document.getElementById('refine-input');
@@ -64,7 +65,7 @@
   const YOUTUBE_ID_RE = /(?:youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|\/shorts\/)([a-zA-Z0-9_-]{11})/;
 
   // --------------------------------------------------------------------------
-  // Theme Management: Light Mode Default + Sun/Moon Toggle
+  // Theme Management: Light Mode Default on First Load + Working Toggle
   // --------------------------------------------------------------------------
   function initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'light';
@@ -90,6 +91,53 @@
     const isDark = htmlEl.classList.contains('dark');
     applyTheme(isDark ? 'light' : 'dark');
   });
+
+  // --------------------------------------------------------------------------
+  // Session Persistence (sessionStorage)
+  // Keeps results intact on refresh; tab close wipes automatically.
+  // --------------------------------------------------------------------------
+  function saveSessionState() {
+    if (!currentSyllabus) return;
+    const state = {
+      syllabus: currentSyllabus,
+      videos: Array.from(videoDetailsMap.entries()),
+      selectedIds: Array.from(selectedVideoIds),
+      loadedVideos: loadedVideos,
+      topic: topicInput.value,
+    };
+    try {
+      sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.warn('Failed to save sessionStorage state:', e);
+    }
+  }
+
+  function restoreSessionState() {
+    try {
+      const raw = sessionStorage.getItem(SESSION_STORAGE_KEY);
+      if (!raw) return;
+      const state = JSON.parse(raw);
+      if (state && state.syllabus) {
+        if (Array.isArray(state.videos)) {
+          videoDetailsMap = new Map(state.videos);
+        }
+        if (Array.isArray(state.loadedVideos)) {
+          loadedVideos = state.loadedVideos;
+          updateVideoCounts();
+        }
+        if (state.topic) {
+          topicInput.value = state.topic;
+        }
+        currentSyllabus = state.syllabus;
+        if (Array.isArray(state.selectedIds)) {
+          selectedVideoIds = new Set(state.selectedIds);
+        }
+        renderSyllabus(currentSyllabus, false);
+      }
+    } catch (e) {
+      console.warn('Failed to restore sessionStorage state:', e);
+    }
+  }
 
   // --------------------------------------------------------------------------
   // Helpers
@@ -153,10 +201,21 @@
     }
   }
 
+  function isOlderThanTwoYears(dateStr) {
+    if (!dateStr) return false;
+    try {
+      const pub = new Date(dateStr);
+      return new Date() - pub > 2 * 365.25 * 24 * 60 * 60 * 1000;
+    } catch {
+      return false;
+    }
+  }
+
   // --------------------------------------------------------------------------
   // Collapsible Micro-Guide: How to get this file
   // --------------------------------------------------------------------------
-  howToToggle.addEventListener('click', () => {
+  howToToggle.addEventListener('click', (e) => {
+    e.preventDefault();
     const isHidden = howToContent.style.display === 'none';
     howToContent.style.display = isHidden ? 'block' : 'none';
     howToChevron.style.transform = isHidden ? 'rotate(180deg)' : 'none';
@@ -171,10 +230,7 @@
     const now = new Date();
 
     return loadedVideos.filter((v) => {
-      // Shorts check: if includeShorts is false, exclude shorts
       if (!includeShorts && v.isShort) return false;
-
-      // Date cutoff check (applies to watch history date)
       if (cutoffVal !== 'all' && v.watchDate) {
         const daysAgo = (now - v.watchDate) / (1000 * 60 * 60 * 24);
         if (daysAgo > parseInt(cutoffVal, 10)) return false;
@@ -275,7 +331,6 @@
             }
           }
         } else if (file.name.endsWith('.csv')) {
-          // Parse playlist CSV (e.g. Watch later.csv)
           const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
           if (lines.length > 1) {
             const header = lines[0].split(',').map((h) => h.trim().replace(/^"|"$/g, '').toLowerCase());
@@ -320,6 +375,7 @@
     }
 
     updateVideoCounts();
+    saveSessionState();
   }
 
   function renderFileList() {
@@ -382,6 +438,7 @@
       updateVideoCounts();
       playlistInput.value = '';
       showToast(`Added ${added} new playlist items to video pool.`, 'success');
+      saveSessionState();
     } catch (err) {
       showToast(err.message, 'error');
     } finally {
@@ -390,11 +447,18 @@
     }
   });
 
-  dateCutoffSelect.addEventListener('change', updateVideoCounts);
-  includeShortsCheckbox.addEventListener('change', updateVideoCounts);
+  dateCutoffSelect.addEventListener('change', () => {
+    updateVideoCounts();
+    saveSessionState();
+  });
+
+  includeShortsCheckbox.addEventListener('change', () => {
+    updateVideoCounts();
+    saveSessionState();
+  });
 
   // --------------------------------------------------------------------------
-  // Extract Syllabus
+  // Extract Learning Track
   // --------------------------------------------------------------------------
   btnExtract.addEventListener('click', async () => {
     const topic = topicInput.value.trim();
@@ -410,14 +474,13 @@
       return;
     }
 
-    // Send up to 500 items including channel name for channel-aware extraction
     const inputVideos = filtered.slice(0, 500).map((v) => ({
       videoId: v.videoId,
       title: v.title,
       channel: v.channelName || '',
     }));
 
-    showLoading('Extracting & Clustering with Gemini...', 'Grouping videos into intuitive sub-topics with 1-line briefs');
+    showLoading('Extracting & Clustering with Gemini...', 'Organizing videos into foundational, building-block, and application sub-topics.');
 
     try {
       const extractResp = await fetch('/api/ai/extract-syllabus', {
@@ -428,7 +491,7 @@
 
       if (!extractResp.ok) {
         const err = await extractResp.json().catch(() => ({}));
-        throw new Error(err.detail || 'Failed to extract syllabus.');
+        throw new Error(err.detail || 'Failed to extract learning track.');
       }
 
       const syllabus = await extractResp.json();
@@ -460,7 +523,8 @@
 
       currentSyllabus = syllabus;
       renderSyllabus(syllabus);
-      showToast('Curated syllabus extracted successfully!', 'success');
+      saveSessionState();
+      showToast('Curated learning track extracted successfully!', 'success');
     } catch (err) {
       console.error(err);
       showToast(err.message, 'error');
@@ -469,7 +533,7 @@
   });
 
   // --------------------------------------------------------------------------
-  // Refine Syllabus
+  // Refine Learning Track
   // --------------------------------------------------------------------------
   btnRefine.addEventListener('click', async () => {
     const refinement = refineInput.value.trim();
@@ -503,14 +567,15 @@
 
       if (!resp.ok) {
         const err = await resp.json().catch(() => ({}));
-        throw new Error(err.detail || 'Failed to refine syllabus.');
+        throw new Error(err.detail || 'Failed to refine learning track.');
       }
 
       const refined = await resp.json();
       currentSyllabus = refined;
       renderSyllabus(refined);
       refineInput.value = '';
-      showToast('Syllabus refined successfully!', 'success');
+      saveSessionState();
+      showToast('Learning track refined successfully!', 'success');
     } catch (err) {
       showToast(err.message, 'error');
     } finally {
@@ -523,7 +588,7 @@
   // Sample Demo Mode (Sync Counters Automatically)
   // --------------------------------------------------------------------------
   async function loadDemoMode() {
-    showLoading('Loading Sample Demo Data...', 'Testing complete syllabus with bundled dataset');
+    showLoading('Loading Sample Demo Data...', 'Testing complete learning track with bundled dataset');
 
     try {
       const resp = await fetch('/api/demo/sample-data');
@@ -531,10 +596,9 @@
 
       const data = await resp.json();
 
-      // Pre-fill videoDetailsMap & sync loadedVideos so counters are accurate
       videoDetailsMap.clear();
       loadedVideos = [];
-      uploadedFiles = [{ name: 'Sample Demo Dataset', count: data.totalVideos || 18, label: 'Demo' }];
+      uploadedFiles = [{ name: 'Sample Demo Dataset', count: data.totalVideos || 16, label: 'Demo' }];
 
       data.subTopics.forEach((st) => {
         if (st.videos && Array.isArray(st.videos)) {
@@ -552,13 +616,13 @@
         }
       });
 
-      // Update inputs & counters so they are never 0 in Demo Mode
       topicInput.value = data.topic || 'English & Communication';
       renderFileList();
       updateVideoCounts();
 
       currentSyllabus = data;
       renderSyllabus(data);
+      saveSessionState();
       showToast('Loaded Sample Demo Mode (English & Communication)', 'success');
     } catch (err) {
       showToast(err.message, 'error');
@@ -572,9 +636,13 @@
   }
 
   // --------------------------------------------------------------------------
-  // Render Syllabus (Accordions, Selection Checkboxes, Monospace Chapters)
+  // Render Learning Track
+  // - Chevron inline to the left of the title
+  // - Default state: expand only the first subtopic; keep others collapsed
+  // - Fixed-width 180px 16:9 horizontal card thumbnail
+  // - Selection checkbox does not navigate away
   // --------------------------------------------------------------------------
-  function renderSyllabus(syllabus) {
+  function renderSyllabus(syllabus, shouldResetSelection = true) {
     emptyState.style.display = 'none';
     loadingState.style.display = 'none';
     syllabusContainer.style.display = 'block';
@@ -582,13 +650,6 @@
 
     syllabusTopicTitle.textContent = syllabus.topic;
 
-    if (syllabus.isTimeSensitive) {
-      badgeTimeSensitivity.textContent = 'Fast-changing topic';
-    } else {
-      badgeTimeSensitivity.textContent = 'Timeless topic';
-    }
-
-    // Collect all video IDs and select all by default
     const allIds = [];
     syllabus.subTopics.forEach((st) => {
       st.videoIds.forEach((id) => {
@@ -596,7 +657,9 @@
       });
     });
 
-    selectedVideoIds = new Set(allIds);
+    if (shouldResetSelection) {
+      selectedVideoIds = new Set(allIds);
+    }
     badgeTotalVideos.textContent = `${allIds.length} videos`;
     updateNotebookLMCount();
 
@@ -604,29 +667,26 @@
     subtopicsList.innerHTML = '';
     syllabus.subTopics.forEach((st, idx) => {
       const accordion = document.createElement('div');
-      // Expand first topic by default, collapse the rest
+      // Expand ONLY the first subtopic by default; collapse all others
       const isFirst = idx === 0;
       accordion.className = `subtopic-accordion ${isFirst ? 'open' : ''}`;
 
       const totalVideosCount = st.videoIds.length;
-      // In first topic, show only first 2 cards initially if > 2
       const limitInitial = isFirst && totalVideosCount > 2;
 
       accordion.innerHTML = `
         <div class="subtopic-header">
           <div class="subtopic-header-left">
-            <svg class="subtopic-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m6 9 6 6 6-6"/>
-            </svg>
-            <div class="subtopic-title-block">
-              <div class="subtopic-title-row">
-                <h4>${st.name}</h4>
-                <span class="badge">${totalVideosCount} video${totalVideosCount === 1 ? '' : 's'}</span>
-              </div>
-              <p class="subtopic-brief">${st.brief}</p>
+            <div class="subtopic-title-row">
+              <svg class="subtopic-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m6 9 6 6 6-6"/>
+              </svg>
+              <h4>${st.name}</h4>
             </div>
+            <p class="subtopic-brief">${st.brief}</p>
           </div>
           <div class="subtopic-header-right">
+            <span class="badge">${totalVideosCount} video${totalVideosCount === 1 ? '' : 's'}</span>
             <button type="button" class="btn-select-toggle" data-st-idx="${idx}">Select all / Deselect</button>
           </div>
         </div>
@@ -636,7 +696,7 @@
         </div>
       `;
 
-      // Header click toggles open/collapsed
+      // Header click toggles open/collapsed smoothly without triggering select-toggle
       const headerEl = accordion.querySelector('.subtopic-header');
       headerEl.addEventListener('click', (e) => {
         if (e.target.closest('.btn-select-toggle')) return;
@@ -653,11 +713,11 @@
         } else {
           st.videoIds.forEach((id) => selectedVideoIds.add(id));
         }
-        // Update checkboxes inside this accordion
         accordion.querySelectorAll('.video-card-cb').forEach((cb) => {
           cb.checked = !allSelected;
         });
         updateNotebookLMCount();
+        saveSessionState();
       });
 
       // Show more button handler
@@ -669,7 +729,6 @@
         });
       }
 
-      // Render video cards
       renderVideoCards(st, accordion.querySelector(`#st-cards-${idx}`), limitInitial);
       subtopicsList.appendChild(accordion);
     });
@@ -699,11 +758,16 @@
       const relativeTime = formatRelativeTime(detail.publishedAt);
       const sourceText = detail.source || '';
 
-      // Muted dot-separated row (no like ratio, no high engagement)
       const metaParts = [viewsText, likesText, relativeTime, sourceText].filter(Boolean);
       const metaRowHtml = metaParts.join(' · ');
 
-      // Monospace Chapters Grid
+      // Recency notice: shown only if topic is time sensitive and video is older than 2 years
+      let recencyNoticeHtml = '';
+      if (currentSyllabus && currentSyllabus.isTimeSensitive && isOlderThanTwoYears(detail.publishedAt)) {
+        recencyNoticeHtml = `<div class="video-recency-note">⚠️ Uploaded &gt;2 years ago; topic details may have evolved</div>`;
+      }
+
+      // Monospace Chapters Grid (omitted when a video has no timestamps)
       let chaptersHtml = '';
       if (detail.chapters && detail.chapters.length > 0) {
         const chapterItems = detail.chapters
@@ -747,11 +811,12 @@
           </a>
           ${detail.channelName ? `<div class="video-channel">${detail.channelName}</div>` : ''}
           ${metaRowHtml ? `<div class="video-meta-row">${metaRowHtml}</div>` : ''}
+          ${recencyNoticeHtml}
           ${chaptersHtml}
         </div>
       `;
 
-      // Checkbox click stops propagation and updates selection set
+      // Checkbox click stops propagation (does not open YouTube link)
       const cb = card.querySelector('.video-card-cb');
       cb.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -761,6 +826,7 @@
           selectedVideoIds.delete(vidId);
         }
         updateNotebookLMCount();
+        saveSessionState();
       });
 
       container.appendChild(card);
@@ -785,7 +851,7 @@
     }
 
     if (!idsToCopy.length) {
-      showToast('No videos selected in current syllabus.', 'error');
+      showToast('No videos selected in current learning track.', 'error');
       return;
     }
 
@@ -842,7 +908,7 @@
     {
       id: 'faq-5',
       question: 'Is my watch history saved anywhere?',
-      answer: `Never. Watch history files are parsed <strong>100% locally in your browser</strong>. We have zero database storage. Only the titles and channels of matching videos are sent transiently to Gemini for syllabus clustering.`,
+      answer: `Your watch history stays on your device. All files are parsed <strong>100% locally in your browser</strong>. Zero database storage — only filtered video titles and channel names are sent transiently to Gemini to construct your learning track, and everything clears when you close this tab.`,
     },
     {
       id: 'faq-6',
@@ -866,7 +932,6 @@
 
     faqChatBody.appendChild(botMsg);
 
-    // Bind chip clicks
     botMsg.querySelectorAll('.faq-chip').forEach((chip) => {
       chip.addEventListener('click', () => {
         const faqId = chip.getAttribute('data-faq-id');
@@ -877,13 +942,11 @@
   }
 
   function handleFaqSelect(item) {
-    // 1. User Message
     const userMsg = document.createElement('div');
     userMsg.className = 'faq-msg faq-msg-user';
     userMsg.innerHTML = `<div class="faq-bubble">${item.question}</div>`;
     faqChatBody.appendChild(userMsg);
 
-    // 2. Bot Response
     const botMsg = document.createElement('div');
     botMsg.className = 'faq-msg faq-msg-bot';
 
@@ -962,7 +1025,10 @@
     emptyState.style.display = 'block';
   }
 
-  // Initialize Theme and live video counts
+  // --------------------------------------------------------------------------
+  // Initialization
+  // --------------------------------------------------------------------------
   initTheme();
   updateVideoCounts();
+  restoreSessionState();
 })();

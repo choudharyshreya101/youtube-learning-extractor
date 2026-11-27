@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css?v=3">
 </head>
 <body>
   <div class="app-container">
@@ -22,16 +22,16 @@
         </div>
         <div>
           <h1 class="app-title">YouTube Learning Extractor</h1>
-          <p class="app-subtitle">Turn watch history & playlists into structured, AI-curated syllabi</p>
+          <p class="app-subtitle">Turn watch history & playlists into structured, AI-curated learning tracks</p>
         </div>
       </div>
       <div class="header-right">
         <!-- Sun/Moon Theme Toggle immediately left of Try Sample Demo Mode -->
-        <button id="btn-theme-toggle" class="btn btn-icon" title="Toggle Light/Dark Theme" aria-label="Toggle theme">
-          <svg id="icon-theme-sun" class="lucide lucide-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button id="btn-theme-toggle" class="btn btn-icon theme-toggle-btn" title="Toggle Light/Dark Theme" aria-label="Toggle theme">
+          <svg id="icon-theme-sun" class="lucide lucide-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
             <circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
           </svg>
-          <svg id="icon-theme-moon" class="lucide lucide-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+          <svg id="icon-theme-moon" class="lucide lucide-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
           </svg>
         </button>
@@ -49,7 +49,7 @@
       <svg class="lucide-shield" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>
-      <span>100% browser-parsed, zero storage — only filtered video titles and channel names are sent transiently to Gemini.</span>
+      <span>Your watch history stays on your device. AI reads only filtered video titles and channel names once with zero saved history, and everything clears automatically when you close this tab.</span>
     </div>
 
     <!-- Main Grid -->
@@ -67,7 +67,7 @@
           <textarea id="topic-input" rows="2" class="form-control" placeholder='Topic, keywords, description, or channel name (e.g., "English fluency" or "Career 247 channel")...'></textarea>
         </div>
 
-        <!-- 2. Compact 1-Row Filters -->
+        <!-- 2. Compact 1-Row Filters: Watched within & Include Shorts side-by-side -->
         <div class="form-group filter-row-compact">
           <div class="filter-col">
             <label class="form-label" for="date-cutoff">
@@ -108,7 +108,7 @@
           <!-- Collapsible How-To Guide with Direct Takeout Link -->
           <div class="how-to-box">
             <button type="button" class="how-to-toggle" id="how-to-toggle">
-              <span>How to get this file?</span>
+              <span class="how-to-toggle-label">How to get this file?</span>
               <svg id="how-to-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="m6 9 6 6 6-6"/>
               </svg>
@@ -116,7 +116,7 @@
             <div class="how-to-content" id="how-to-content" style="display: none;">
               <ol class="how-to-steps">
                 <li>
-                  Open Google Takeout with YouTube selected:
+                  Open Google Takeout with YouTube pre-selected:
                   <a href="https://takeout.google.com/settings/takeout/custom/youtube" target="_blank" rel="noopener" class="btn btn-takeout-link">
                     <span>Open Google Takeout</span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -147,16 +147,16 @@
         <!-- 4. Primary Extract Button & Live Counter -->
         <div class="extract-section">
           <button id="btn-extract" class="btn btn-primary btn-block">
-            <span>Extract Learning Syllabus</span>
+            <span>Extract Learning Track</span>
             <span class="btn-counter" id="active-pool-badge">(<span id="filtered-count">0</span> matching)</span>
           </button>
         </div>
       </section>
 
-      <!-- Right Panel: Curated syllabus -->
+      <!-- Right Panel: Curated learning track -->
       <section class="panel output-panel">
         <div class="panel-header">
-          <h2>Curated syllabus</h2>
+          <h2>Curated learning track</h2>
           <div class="output-actions" id="output-actions" style="display: none;">
             <button id="btn-copy-notebooklm" class="btn btn-notebooklm" title="Copy video links for Google NotebookLM">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -168,27 +168,31 @@
           </div>
         </div>
 
-        <!-- 3-Step Horizontal Empty State -->
+        <!-- 3-Step Horizontal Empty State Card -->
         <div id="empty-state" class="empty-state-card">
+          <div class="empty-state-header">
+            <h3 class="empty-state-title">Build your learning track in three steps</h3>
+            <p class="empty-state-subtitle">Your curated learning track will appear here once your videos are extracted.</p>
+          </div>
           <div class="guide-steps-grid">
             <div class="guide-step">
               <div class="guide-num">1</div>
               <div class="guide-title">Describe goal & set filters</div>
-              <p class="guide-desc">Enter a skill, framework, or channel name, then choose your date window.</p>
+              <p class="guide-desc">Enter a topic, keywords, or channel name, then choose your watch window and Shorts preference.</p>
             </div>
             <div class="guide-step">
               <div class="guide-num">2</div>
-              <div class="guide-title">Add video sources</div>
-              <p class="guide-desc">Drop your <code>watch-history.json</code> or paste a public YouTube playlist URL.</p>
+              <div class="guide-title">Add video sources & extract</div>
+              <p class="guide-desc">Drop your <code>watch-history.json</code> (or paste a public/unlisted YouTube playlist URL), then click <strong>Extract Learning Track</strong>.</p>
             </div>
             <div class="guide-step">
               <div class="guide-num">3</div>
               <div class="guide-title">Review & copy to NotebookLM</div>
-              <p class="guide-desc">Explore organized sub-topics with factual briefs and copy up to 50 links for research.</p>
+              <p class="guide-desc">Browse organized sub-topics, refine with AI if needed, and copy selected links in one click.</p>
             </div>
           </div>
           <div class="guide-footer">
-            <div class="guide-footer-text">Just exploring? Test with pre-bundled data immediately.</div>
+            <span class="guide-footer-text">Just exploring?</span>
             <button id="btn-demo-mode-inline" class="btn btn-secondary btn-sm">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/>
@@ -202,37 +206,36 @@
         <div id="loading-state" class="loading-state" style="display: none;">
           <div class="spinner"></div>
           <h4 id="loading-title">Extracting & Clustering with Gemini...</h4>
-          <p id="loading-subtitle">Grouping videos into intuitive sub-topics and writing factual briefs.</p>
+          <p id="loading-subtitle">Organizing videos into foundational, building-block, and application sub-topics.</p>
         </div>
 
-        <!-- Syllabus Content -->
+        <!-- Learning Track Container -->
         <div id="syllabus-container" class="syllabus-container" style="display: none;">
-          <!-- Refine with AI Bar directly above syllabus (no redundant filter pills) -->
+          <!-- Refine Bar (No stray 'Timeless topic' badge) -->
           <div class="refine-hero">
             <div class="refine-header">
               <div class="refine-title-wrap">
-                <span class="refine-badge" id="badge-time-sensitivity">Timeless topic</span>
-                <h3 id="syllabus-topic-title">Topic Name</h3>
+                <h3 id="syllabus-topic-title">Learning Track</h3>
               </div>
               <div class="refine-stats">
                 <span id="badge-total-videos">0 videos</span>
               </div>
             </div>
             <div class="refine-input-row">
-              <input type="text" id="refine-input" class="form-control" placeholder="Refine syllabus with AI (e.g. 'Emphasize speaking drills' or 'Exclude beginner basics')...">
-              <button id="btn-refine" class="btn btn-secondary">Refine with AI</button>
+              <input type="text" id="refine-input" class="form-control" placeholder="Refine learning track with AI (e.g. 'Emphasize speaking drills' or 'Exclude beginner basics')...">
+              <button id="btn-refine" class="btn btn-secondary flex-shrink-0">Refine with AI</button>
             </div>
           </div>
 
-          <!-- Collapsible Topic Accordions List -->
+          <!-- Collapsible Subtopic Accordions List -->
           <div id="subtopics-list" class="subtopics-list"></div>
         </div>
       </section>
     </div>
   </div>
 
-  <!-- Floating Guided FAQ Drawer Button -->
-  <button id="btn-faq-trigger" class="floating-faq-btn" title="Open Guided Help & Feedback">
+  <!-- Floating Guided FAQ Drawer Button (Pinned to Bottom-Right) -->
+  <button id="btn-faq-trigger" class="floating-faq-btn" title="Open Guided Help & Feedback" aria-label="Open guided help">
     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
     </svg>
@@ -264,6 +267,6 @@
   <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-container"></div>
 
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v=3"></script>
 </body>
 </html>
